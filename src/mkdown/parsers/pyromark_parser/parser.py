@@ -108,6 +108,20 @@ class PyroMarkParser(BaseParser):
         # Additional options
         self._kwargs = kwargs
 
+    def iter(self, markdown_text: str):
+        import pyromark
+
+        for event in pyromark.events(markdown_text):
+            match event:
+                case {"Start": {"Heading": {"level": heading_level}}}:
+                    print(f"Heading with {heading_level} level started")
+                case {"Text": text}:
+                    print(f"Got {text!r} text")
+                case {"End": {"Heading": heading_level}}:
+                    print(f"Heading with {heading_level} level ended")
+                case other_event:
+                    print(f"Got {other_event!r}")
+
     def convert(self, markdown_text: str) -> str:
         """Convert markdown to HTML.
 

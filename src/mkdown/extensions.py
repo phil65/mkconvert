@@ -5,10 +5,9 @@ from typing import TYPE_CHECKING, Literal
 
 import epregistry
 import markdown
-from markdown.extensions.attr_list import AttrListTreeprocessor
-from markdown.extensions.codehilite import CodeHilite
 
-from mkdown.tree_processors.python_markdown import PythonMarkdownExtension
+
+# from mkdown.tree_processors.python_markdown import PythonMarkdownExtension
 
 
 if TYPE_CHECKING:
@@ -106,11 +105,11 @@ class FencedCodeConfig:
     """Prefix prepended to the language."""
 
 
-attr_list = PythonMarkdownExtension(
-    AttrListTreeprocessor, "fenced_code_block", 25, FencedCodeConfig
-)
-hilite = PythonMarkdownExtension(CodeHilite, "hilite", 8, CodeHiliteConfig)
-attr_list = PythonMarkdownExtension(AttrListTreeprocessor, "attr_list", 8)
+# attr_list = PythonMarkdownExtension(
+#     AttrListTreeprocessor, "fenced_code_block", 25, FencedCodeConfig
+# )
+# hilite = PythonMarkdownExtension(CodeHilite, "hilite", 8, CodeHiliteConfig)
+# attr_list = PythonMarkdownExtension(AttrListTreeprocessor, "attr_list", 8)
 
 
 def get_installed_extensions():
@@ -123,5 +122,5 @@ def get_installed_extensions():
 
 if __name__ == "__main__":
     extensions = get_installed_extensions()
-    for extension in extensions.values():
-        print(extension())
+    # for extension in extensions.values():
+    #     print(extension())

@@ -8,7 +8,30 @@ from mkdown.parsers.base_parser import BaseParser
 
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from markdown_it_pyrs import Node
     from markdown_it_pyrs.markdown_it_pyrs import _PLUGIN_NAME
+
+
+def _extract_content(node) -> str:
+    """Extract rendered text content from a node recursively.
+
+    Args:
+        node: The Node to extract content from
+
+    Returns:
+        The concatenated text content
+    """
+    if "content" in node.meta:
+        return node.meta["content"]
+
+    # Otherwise collect from children
+    content = ""
+    for child in node.children:
+        content += _extract_content(child)
+
+    return content
 
 
 class MarkdownItPyRSParser(BaseParser):
@@ -93,6 +116,31 @@ class MarkdownItPyRSParser(BaseParser):
         """
         return self._parser.render(markdown_text, xhtml=self._xhtml)
 
+    def iter(self, markdown_text: str) -> Iterator[tuple[str, str, str, Node]]:
+        """Iterate over the AST nodes with their raw source.
+
+        Args:
+            markdown_text: Input markdown text
+
+        Returns:
+            Iterator over (node_type, rendered_content, raw_markdown, node) tuples
+        """
+        node = self._parser.tree(markdown_text)
+
+        # Convert markdown to bytes for proper slicing if needed
+        markdown_bytes = markdown_text.encode("utf-8")
+
+        for child in node.children:
+            node_type = child.name
+            rendered_content = _extract_content(child)
+            raw_markdown = ""
+            if child.srcmap:
+                start, end = child.srcmap
+                raw_slice = markdown_bytes[start:end]
+                raw_markdown = raw_slice.decode("utf-8")
+
+            yield node_type, rendered_content, raw_markdown, child
+
     @property
     def name(self) -> str:
         """Get the name of the parser."""
@@ -142,4 +190,5 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
 
     parser = MarkdownItPyRSParser()
-    print(parser.convert("# Test"))
+    for node in parser.iter("# Test heading"):
+        print(node)
