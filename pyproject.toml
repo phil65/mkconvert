@@ -1,15 +1,15 @@
 [tool.hatch.version]
 source = "regex_commit"
 commit_extra_args = ["-e"]
-path = "src/mkdown/__init__.py"
+path = "src/mkconvert/__init__.py"
 
 [build-system]
 requires = ["hatchling", "hatch-regex-commit"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mkdown"
-description = "Tools for (Python-)Markdown"
+name = "mkconvert"
+description = "Markdown-HTML converters"
 authors = [
     { name = "Philipp Temminghoff", email = "philipptemminghoff@googlemail.com" },
 ]
@@ -27,14 +27,15 @@ classifiers = [
     "Topic :: Documentation",
     "Topic :: Software Development",
     "Topic :: Utilities",
-    "Typing :: Typed",
+    "Typing :: Typed","Framework :: Pydantic",
+    "Framework :: Pydantic :: 2",
 
 ]
 keywords = []
 requires-python = ">=3.12"
 license = { file = "LICENSE" }
 dependencies = [
-
+"pydantic",
     # Only add below (Copier)
 ]
 
@@ -76,11 +77,11 @@ docs = [
 ]
 
 [project.urls]
-Documentation = "https://phil65.github.io/mkdown/"
-Source = "https://github.com/phil65/mkdown"
-Issues = "https://github.com/phil65/mkdown/issues"
-Discussions = "https://github.com/phil65/mkdown/discussions"
-"Code coverage" = "https://app.codecov.io/gh/phil65/mkdown"
+Documentation = "https://phil65.github.io/mkconvert/"
+Source = "https://github.com/phil65/mkconvert"
+Issues = "https://github.com/phil65/mkconvert/issues"
+Discussions = "https://github.com/phil65/mkconvert/discussions"
+"Code coverage" = "https://app.codecov.io/gh/phil65/mkconvert"
 
 [tool.pytest.ini_options]
 testpaths = "tests/"
@@ -103,7 +104,7 @@ disable_error_code = ["misc", "import"]
 pretty = true
 check_untyped_defs = true
 exclude = ['venv/', '.venv/', 'tests/']
-plugins = []
+plugins = ["pydantic.mypy"]
 
 [tool.ruff]
 line-length = 90
@@ -205,6 +206,7 @@ ignore = [
     # "PLR2004", # Magic values instead of named consts
     "SLF001", # Private member accessed
     "TRY003", # Avoid specifying long messages outside the exception class
+    "TC006", # runtime-cast-value
 ]
 
 [tool.ruff.lint.flake8-quotes]

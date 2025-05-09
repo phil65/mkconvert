@@ -7,7 +7,7 @@ import sys
 import time
 from typing import TYPE_CHECKING, Any
 
-from mkdown.parsers.parser import MarkdownParser
+from mkconvert.parsers.parser import MarkdownParser
 
 
 if TYPE_CHECKING:

@@ -7,7 +7,7 @@ from xml.etree import ElementTree as ET
 import markdown
 import pytest
 
-from mkdown.tree_processors.extract_title import ExtractTitleETProcessor
+from mkconvert.tree_processors.extract_title import ExtractTitleETProcessor
 
 
 @pytest.fixture
