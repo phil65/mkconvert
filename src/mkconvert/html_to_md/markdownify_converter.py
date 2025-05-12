@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 import importlib.util
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 from mkconvert.html_to_md.base import (
     BaseHtmlToMarkdown,
@@ -25,6 +25,7 @@ if TYPE_CHECKING:
 
 # Check if markdownify is available
 MARKDOWNIFY_AVAILABLE = importlib.util.find_spec("markdownify") is not None
+StripDocumentType = Literal["strip", "lstrip", "rstrip"]
 
 
 def _map_heading_style(style: HeadingStyle) -> str:
@@ -87,7 +88,7 @@ class MarkdownifyOptions:
     table_infer_header: bool = False
     wrap: bool = False
     wrap_width: int | None = 80
-    strip_document: str | None = "STRIP"
+    strip_document: StripDocumentType | None = "strip"
 
 
 class MarkdownifyConverter(BaseHtmlToMarkdown):
@@ -121,7 +122,7 @@ class MarkdownifyConverter(BaseHtmlToMarkdown):
         table_infer_header: bool = False,
         wrap: bool = False,
         wrap_width: int | None = 80,
-        strip_document: str | None = "STRIP",
+        strip_document: StripDocumentType | None = "strip",
         **options: Any,
     ) -> None:
         """Initialize markdownify converter with options.
@@ -150,7 +151,7 @@ class MarkdownifyConverter(BaseHtmlToMarkdown):
             table_infer_header: Infer table headers from first row
             wrap: Whether to wrap text
             wrap_width: Width to wrap text at
-            strip_document: How to strip document (LSTRIP, RSTRIP, STRIP, None)
+            strip_document: How to strip document (lstrip, rstrip, strip, None)
             **options: Additional options
 
         Raises:
