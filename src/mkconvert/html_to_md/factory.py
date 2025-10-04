@@ -27,6 +27,7 @@ if TYPE_CHECKING:
 # Check for library availability
 HTMD_AVAILABLE = importlib.util.find_spec("htmd") is not None
 MARKDOWNIFY_AVAILABLE = importlib.util.find_spec("markdownify") is not None
+StripDocumentOption = Literal["strip", "lstrip", "rstrip"]
 
 
 class HtmlToMarkdownFactory:
@@ -195,7 +196,7 @@ class HtmlToMarkdownFactory:
         table_infer_header: bool = False,
         wrap: bool = False,
         wrap_width: int | None = 80,
-        strip_document: str | None = "STRIP",
+        strip_document: StripDocumentOption | None = "strip",
         **options: Any,
     ) -> MarkdownifyConverter:
         """Create an HTML to Markdown converter using markdownify.
