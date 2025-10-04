@@ -8,19 +8,22 @@ from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 from mkconvert.html_to_md.base import (
     BaseHtmlToMarkdown,
-    CodeBlockStyle,
-    CodeFenceStyle,
-    EmphasisStyle,
-    HeadingStyle,
-    HorizontalRuleStyle,
-    LineBreakStyle,
-    LinkStyle,
-    ListMarkerStyle,
 )
 
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+
+    from mkconvert.html_to_md.base import (
+        CodeBlockStyle,
+        CodeFenceStyle,
+        EmphasisStyle,
+        HeadingStyle,
+        HorizontalRuleStyle,
+        LineBreakStyle,
+        LinkStyle,
+        ListMarkerStyle,
+    )
 
 
 # Check if markdownify is available
