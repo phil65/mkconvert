@@ -2,8 +2,6 @@
 
 [![PyPI License](https://img.shields.io/pypi/l/mkconvert.svg)](https://pypi.org/project/mkconvert/)
 [![Package status](https://img.shields.io/pypi/status/mkconvert.svg)](https://pypi.org/project/mkconvert/)
-[![Daily downloads](https://img.shields.io/pypi/dd/mkconvert.svg)](https://pypi.org/project/mkconvert/)
-[![Weekly downloads](https://img.shields.io/pypi/dw/mkconvert.svg)](https://pypi.org/project/mkconvert/)
 [![Monthly downloads](https://img.shields.io/pypi/dm/mkconvert.svg)](https://pypi.org/project/mkconvert/)
 [![Distribution format](https://img.shields.io/pypi/format/mkconvert.svg)](https://pypi.org/project/mkconvert/)
 [![Wheel availability](https://img.shields.io/pypi/wheel/mkconvert.svg)](https://pypi.org/project/mkconvert/)
@@ -21,11 +19,8 @@
 [![Github last commit](https://img.shields.io/github/last-commit/phil65/mkconvert)](https://github.com/phil65/mkconvert/commits)
 [![Github release date](https://img.shields.io/github/release-date/phil65/mkconvert)](https://github.com/phil65/mkconvert/releases)
 [![Github language count](https://img.shields.io/github/languages/count/phil65/mkconvert)](https://github.com/phil65/mkconvert)
-[![Github commits this week](https://img.shields.io/github/commit-activity/w/phil65/mkconvert)](https://github.com/phil65/mkconvert)
 [![Github commits this month](https://img.shields.io/github/commit-activity/m/phil65/mkconvert)](https://github.com/phil65/mkconvert)
-[![Github commits this year](https://img.shields.io/github/commit-activity/y/phil65/mkconvert)](https://github.com/phil65/mkconvert)
 [![Package status](https://codecov.io/gh/phil65/mkconvert/branch/main/graph/badge.svg)](https://codecov.io/gh/phil65/mkconvert/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![PyUp](https://pyup.io/repos/github/phil65/mkconvert/shield.svg)](https://pyup.io/repos/github/phil65/mkconvert/)
 
 [Read the documentation!](https://phil65.github.io/mkconvert/)
