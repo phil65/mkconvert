@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, TypeVar
+from typing import Any
 from xml.etree import ElementTree as ET
 
 
@@ -19,10 +19,6 @@ except ImportError:
     class lxml_etree:  # type: ignore  # noqa: N801
         class _Element:
             pass
-
-
-# Generic type for tree elements
-E = TypeVar("E")
 
 
 class TreeProcessor[T](ABC):
