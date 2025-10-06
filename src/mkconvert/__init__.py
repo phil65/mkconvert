@@ -1,6 +1,10 @@
 """A Python wrapper for Rust-based markdown parsers with processor support."""
 
-__version__ = "0.11.5"
+from __future__ import annotations
+
+from importlib.metadata import version
+
+__version__ = version("mkconvert")
 
 from mkconvert.parsers.base_parser import BaseParser
 from mkconvert.parsers.parser import MarkdownParser
@@ -28,6 +32,7 @@ from mkconvert.post_processors.base import PostProcessor
 from mkconvert.post_processors.sanitizer import SanitizeHTMLProcessor
 
 __all__ = [
+    "__version__",
     "BaseParser",
     "ComrakParser",
     "ETTreeProcessor",
