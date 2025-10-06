@@ -1,10 +1,17 @@
-"""A Python wrapper for Rust-based markdown parsers with processor support."""
+"""mkconvert: Markdown-HTML converters"""
 
 from __future__ import annotations
 
 from importlib.metadata import version
 
 __version__ = version("mkconvert")
+__title__ = "mkconvert"
+__description__ = "Markdown-HTML converters"
+__author__ = "Philipp Temminghoff"
+__author_email__ = "philipptemminghoff@googlemail.com"
+__copyright__ = "Copyright (c) 2024 Philipp Temminghoff"
+__license__ = "MIT"
+__url__ = "https://github.com/phil65/mkconvert"
 
 from mkconvert.parsers.base_parser import BaseParser
 from mkconvert.parsers.parser import MarkdownParser
