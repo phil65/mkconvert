@@ -32,7 +32,6 @@ from mkconvert.post_processors.base import PostProcessor
 from mkconvert.post_processors.sanitizer import SanitizeHTMLProcessor
 
 __all__ = [
-    "__version__",
     "BaseParser",
     "ComrakParser",
     "ETTreeProcessor",
@@ -52,4 +51,5 @@ __all__ = [
     "PythonMarkdownParser",
     "SanitizeHTMLProcessor",
     "TreeProcessor",
+    "__version__",
 ]
