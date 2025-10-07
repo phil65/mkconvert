@@ -1,6 +1,6 @@
 [project]
 name = "mkconvert"
-version = "0.12.1"
+version = "1.0.0"
 description = "Markdown-HTML converters"
 readme = "README.md"
 requires-python = ">=3.13"
