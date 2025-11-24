@@ -150,10 +150,7 @@ class ComrakParser(BaseParser):
             features.add("superscript")
         if self._ext_opts.subscript:
             features.add("subscript")
-        if (
-            self._ext_opts.wikilinks_title_after_pipe
-            or self._ext_opts.wikilinks_title_before_pipe
-        ):
+        if self._ext_opts.wikilinks_title_after_pipe or self._ext_opts.wikilinks_title_before_pipe:
             features.add("wikilinks")
         if self._ext_opts.header_ids:
             features.add("header_ids")

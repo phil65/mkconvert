@@ -78,9 +78,7 @@ class MarkdownParser:
             for processor in self.tree_processors.lxml_processors:
                 tree = processor.process_tree(tree)
 
-            return "".join(
-                lxml_etree.tostring(child, encoding="unicode") for child in tree
-            )
+            return "".join(lxml_etree.tostring(child, encoding="unicode") for child in tree)
         except Exception as e:  # noqa: BLE001
             warnings.warn(
                 f"Error processing with lxml: {e}. Falling back to ElementTree.",

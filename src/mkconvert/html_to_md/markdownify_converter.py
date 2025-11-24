@@ -161,9 +161,7 @@ class MarkdownifyConverter(BaseHtmlToMarkdown):
             ImportError: If markdownify is not installed
         """
         if not MARKDOWNIFY_AVAILABLE:
-            msg = (
-                "markdownify is not installed. Install it with 'pip install markdownify'."
-            )
+            msg = "markdownify is not installed. Install it with 'pip install markdownify'."
             raise ImportError(msg)
 
         # Store markdownify-specific options

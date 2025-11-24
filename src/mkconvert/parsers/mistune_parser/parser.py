@@ -66,9 +66,7 @@ class MistuneParser(BaseParser):
                         self._plugins.append(plugin)
 
         # Create the parser
-        self._parser = mistune.create_markdown(
-            escape=escape, plugins=self._plugins, **kwargs
-        )
+        self._parser = mistune.create_markdown(escape=escape, plugins=self._plugins, **kwargs)
 
         # Store initialization options
         self._options = {"escape": escape, "plugins": self._plugins, **kwargs}

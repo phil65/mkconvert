@@ -139,9 +139,7 @@ if LXML_AVAILABLE:
             """
             ...
 
-        def find_elements(
-            self, tree: lxml_etree._Element, xpath: str
-        ) -> list[lxml_etree._Element]:
+        def find_elements(self, tree: lxml_etree._Element, xpath: str) -> list[lxml_etree._Element]:
             """Find elements in the tree using XPath.
 
             Args:
@@ -168,9 +166,7 @@ if LXML_AVAILABLE:
             """
             return element.xpath("string()")
 
-        def set_attribute(
-            self, element: lxml_etree._Element, name: str, value: str
-        ) -> None:
+        def set_attribute(self, element: lxml_etree._Element, name: str, value: str) -> None:
             """Set an attribute on an element.
 
             Args:

@@ -43,11 +43,7 @@ class ExtractTitleLXMLProcessor(LXMLTreeProcessor):
 
             # Handle trailing anchor if present (common in some markdown renderers)
             children = h1.getchildren()
-            if (
-                children
-                and children[-1].tag == "a"
-                and not (children[-1].tail or "").strip()
-            ):
+            if children and children[-1].tag == "a" and not (children[-1].tail or "").strip():
                 h1 = copy.deepcopy(h1)  # Create copy to avoid modifying original
                 h1.remove(children[-1])
 

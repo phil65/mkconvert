@@ -41,9 +41,7 @@ class CMarkGfmParser(BaseParser):
 
         if self._mode == "markdown":
             return cmarkgfm.markdown_to_html(markdown_text)
-        return cmarkgfm.github_flavored_markdown_to_html(
-            markdown_text, options=self._options or 0
-        )
+        return cmarkgfm.github_flavored_markdown_to_html(markdown_text, options=self._options or 0)
 
     @property
     def name(self) -> str:

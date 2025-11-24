@@ -67,8 +67,7 @@ class MarkdownItPyRSParser(BaseParser):
             from markdown_it_pyrs import MarkdownIt
         except ImportError as e:
             msg = (
-                "markdown-it-pyrs is not installed. Install it with "
-                "'pip install markdown-it-pyrs'."
+                "markdown-it-pyrs is not installed. Install it with 'pip install markdown-it-pyrs'."
             )
             raise ImportError(msg) from e
 

@@ -40,9 +40,7 @@ class Prettify(PostProcessor):
             ImportError: If bs4 is not installed
         """
         if not BS4_AVAILABLE:
-            msg = (
-                "bs4 is not installed. Install it with 'pip install bs4' to use Prettify."
-            )
+            msg = "bs4 is not installed. Install it with 'pip install bs4' to use Prettify."
             raise ImportError(msg)
 
         super().__init__(priority)
