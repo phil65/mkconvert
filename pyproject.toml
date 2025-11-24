@@ -40,6 +40,7 @@ Issues = "https://github.com/phil65/mkconvert/issues"
 Source = "https://github.com/phil65/mkconvert"
 
 [project.optional-dependencies]
+cmarkgfm = ["cmarkgfm"]
 comrak = ["comrak; python_version < '3.14'"]
 htmd-py = ["htmd-py"]
 lxml = ["lxml; python_version < '3.14'"]
