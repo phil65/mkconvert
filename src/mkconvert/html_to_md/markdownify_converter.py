@@ -256,6 +256,6 @@ class MarkdownifyConverter(BaseHtmlToMarkdown):
             keep_inline_images_in=self._options.keep_inline_images_in,
             table_infer_header=self._options.table_infer_header,
             wrap=self._options.wrap,
-            wrap_width=self._options.wrap_width,
+            wrap_width=self._options.wrap_width or 80,
             strip_document=self._options.strip_document,
         )
