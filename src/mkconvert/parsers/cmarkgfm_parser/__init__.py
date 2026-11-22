@@ -1,5 +1,5 @@
-"""Pyromark Parser."""
+"""CMarkGfm Parser."""
 
-from mkconvert.parsers.pyromark_parser.parser import PyroMarkParser
+from mkconvert.parsers.cmarkgfm_parser.parser import CMarkGfmParser
 
-__all__ = ["PyroMarkParser"]
+__all__ = ["CMarkGfmParser"]

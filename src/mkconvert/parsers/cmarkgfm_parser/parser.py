@@ -10,7 +10,7 @@ from mkconvert.parsers.base_parser import BaseParser
 
 
 class CMarkGfmParser(BaseParser):
-    """Parser implementation using PyroMark."""
+    """Parser implementation using cmarkgfm."""
 
     def __init__(
         self,
@@ -19,11 +19,12 @@ class CMarkGfmParser(BaseParser):
         enable_footnotes: bool = False,
         **kwargs: Any,
     ) -> None:
-        """Initialize the PyroMark parser.
+        """Initialize the cmarkgfm parser.
 
         Args:
-            enable_tables: Enable tables extension
-            enable_footnotes: Enable footnotes extension
+            mode: "markdown" for plain CommonMark, "gfm" for GitHub Flavored Markdown
+            enable_footnotes: Enable footnotes extension (gfm mode only)
+            kwargs: Additional keyword arguments (stored, currently unused)
         """
         from cmarkgfm.cmark import Options as cmarkgfmOptions
 
