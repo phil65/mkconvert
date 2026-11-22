@@ -308,6 +308,12 @@ allowed-unresolved-imports = ["comrak", "pyromark", "pyromark.**"]
 # `Config` attributes) is an intentional pattern.
 incompatible-mutable-override = "ignore"
 
+[[tool.ty.overrides]]
+# The comrak sdist (used where no wheel exists, e.g. Windows + Python 3.13)
+# ships without type stubs, so its members are unknown there.
+include = ["src/mkconvert/parsers/comrak_parser/**"]
+rules = { missing-attribute = "ignore" }
+
 [tool.uv]
 default-groups = ["dev", "lint", "docs"]
 
