@@ -1,6 +1,7 @@
 """mkconvert: main package.
 
-Markdown-HTML converters.
+Unified interface for Python and Rust Markdown parsers,
+with an HTML processing pipeline and HTML-to-Markdown conversion.
 """
 
 from __future__ import annotations

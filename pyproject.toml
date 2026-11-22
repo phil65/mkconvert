@@ -3,7 +3,7 @@
 [project]
 name = "mkconvert"
 version = "1.0.0"
-description = "Markdown-HTML converters"
+description = "Unified interface for Python and Rust Markdown parsers, with an HTML processing pipeline and HTML-to-Markdown conversion"
 readme = "README.md"
 requires-python = ">=3.13"
 license = "MIT"
@@ -11,19 +11,30 @@ license-files = ["LICENSE"]
 authors = [
   { name = "Philipp Temminghoff", email = "philipptemminghoff@googlemail.com" },
 ]
-keywords = []
+keywords = [
+  "commonmark",
+  "comrak",
+  "converter",
+  "gfm",
+  "html",
+  "html-to-markdown",
+  "markdown",
+  "markdown-parser",
+  "pyromark",
+  "sanitizer",
+]
 classifiers = [
   "Development Status :: 4 - Beta",
-  "Framework :: Pydantic",
-  "Framework :: Pydantic :: 2",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
-  "Topic :: Software Development",
-  "Topic :: Utilities",
+  "Topic :: Documentation",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Text Processing :: Markup :: HTML",
+  "Topic :: Text Processing :: Markup :: Markdown",
   "Typing :: Typed",
 ]
 dependencies = [
@@ -34,6 +45,7 @@ dependencies = [
 [project.urls]
 "Code coverage" = "https://app.codecov.io/gh/phil65/mkconvert"
 Documentation = "https://phil65.github.io/mkconvert/"
+Homepage = "https://phil65.github.io/mkconvert/"
 Issues = "https://github.com/phil65/mkconvert/issues"
 Source = "https://github.com/phil65/mkconvert"
 
