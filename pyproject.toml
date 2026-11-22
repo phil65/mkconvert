@@ -38,6 +38,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
+  "pydantic",
   "schemez",
   # Only add below (Copier)
 ]
@@ -105,7 +106,7 @@ exclude_lines = [
 
 [tool.deptry.per_rule_ignores]
 # schemez: kept on purpose; pymdown-extensions: loaded by name as Markdown extensions.
-DEP002 = ["schemez", "pymdown-extensions"]
+DEP002 = ["pydantic", "schemez", "pymdown-extensions"]
 
 [tool.mknodes]
 allowed-commit-types = [
