@@ -59,7 +59,7 @@ class Markdown2Parser(BaseParser):
             self._extras.append("header-ids")
 
         # Store options
-        self._options = {
+        self._options: dict[str, Any] = {
             "extras": self._extras,
             "safe_mode": safe_mode,
             "html4tags": html4tags,

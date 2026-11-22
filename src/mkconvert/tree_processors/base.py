@@ -3,22 +3,17 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any
+import importlib.util
+from typing import TYPE_CHECKING, Any
 from xml.etree import ElementTree as ET
 
 
-# Try to import lxml, but don't fail if it's not installed
-try:
+if TYPE_CHECKING:
     from lxml import etree as lxml_etree
 
-    LXML_AVAILABLE = True
-except ImportError:
-    LXML_AVAILABLE = False
 
-    # Create a stub for type checking
-    class lxml_etree:  # type: ignore  # noqa: N801
-        class _Element:
-            pass
+# lxml is optional; LXMLTreeProcessor raises ImportError on init if it is missing.
+LXML_AVAILABLE = importlib.util.find_spec("lxml") is not None
 
 
 class TreeProcessor[T](ABC):
@@ -122,87 +117,93 @@ class ETTreeProcessor(TreeProcessor[ET.Element]):
         return element
 
 
-if LXML_AVAILABLE:
+class LXMLTreeProcessor(TreeProcessor["lxml_etree._Element"]):
+    """Base class for lxml-based tree processors.
 
-    class LXMLTreeProcessor(TreeProcessor[lxml_etree._Element]):
-        """Base class for lxml-based tree processors."""
+    Requires the optional `lxml` dependency.
+    """
 
-        @abstractmethod
-        def process_tree(self, tree: lxml_etree._Element) -> lxml_etree._Element:
-            """Process the lxml tree.
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize the processor.
 
-            Args:
-                tree: The lxml tree to process
-
-            Returns:
-                The processed lxml tree
-            """
-            ...
-
-        def find_elements(self, tree: lxml_etree._Element, xpath: str) -> list[lxml_etree._Element]:
-            """Find elements in the tree using XPath.
-
-            Args:
-                tree: The tree to search
-                xpath: The XPath expression
-
-            Returns:
-                List of matching elements
-            """
-            result = tree.xpath(xpath)
-            if isinstance(result, list):
-                # XPath can return other types, but we only want elements
-                return [e for e in result if isinstance(e, lxml_etree._Element)]
-            return []
-
-        def get_text_content(self, element: lxml_etree._Element) -> str:
-            """Get all text content from an element, including child elements.
-
-            Args:
-                element: The element to extract text from
-
-            Returns:
-                The combined text content
-            """
-            return element.xpath("string()")
-
-        def set_attribute(self, element: lxml_etree._Element, name: str, value: str) -> None:
-            """Set an attribute on an element.
-
-            Args:
-                element: The element to modify
-                name: Attribute name
-                value: Attribute value
-            """
-            element.attrib[name] = value
-
-        def create_element(
-            self, tag: str, text: str | None = None, attrib: dict[str, str] | None = None
-        ) -> lxml_etree._Element:
-            """Create a new element.
-
-            Args:
-                tag: Element tag name
-                text: Optional text content
-                attrib: Optional attributes
-
-            Returns:
-                The new element
-            """
-            element = lxml_etree.Element(tag, attrib or {})
-            if text is not None:
-                element.text = text
-            return element
-
-else:
-
-    class LXMLTreeProcessor(ABC):  # type: ignore  # noqa: B024
-        """Placeholder for lxml-based tree processors when lxml is not installed."""
-
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            """Initialize but raise ImportError."""
+        Raises:
+            ImportError: If lxml is not installed
+        """
+        if not LXML_AVAILABLE:
             msg = (
                 "lxml is not installed. Install it with 'pip install lxml' "
                 "to use LXMLTreeProcessor."
             )
             raise ImportError(msg)
+        super().__init__(*args, **kwargs)
+
+    @abstractmethod
+    def process_tree(self, tree: lxml_etree._Element) -> lxml_etree._Element:
+        """Process the lxml tree.
+
+        Args:
+            tree: The lxml tree to process
+
+        Returns:
+            The processed lxml tree
+        """
+        ...
+
+    def find_elements(self, tree: lxml_etree._Element, xpath: str) -> list[lxml_etree._Element]:
+        """Find elements in the tree using XPath.
+
+        Args:
+            tree: The tree to search
+            xpath: The XPath expression
+
+        Returns:
+            List of matching elements
+        """
+        from lxml import etree as lxml_etree
+
+        result = tree.xpath(xpath)
+        if isinstance(result, list):
+            # XPath can return other types, but we only want elements
+            return [e for e in result if isinstance(e, lxml_etree._Element)]
+        return []
+
+    def get_text_content(self, element: lxml_etree._Element) -> str:
+        """Get all text content from an element, including child elements.
+
+        Args:
+            element: The element to extract text from
+
+        Returns:
+            The combined text content
+        """
+        return element.xpath("string()")
+
+    def set_attribute(self, element: lxml_etree._Element, name: str, value: str) -> None:
+        """Set an attribute on an element.
+
+        Args:
+            element: The element to modify
+            name: Attribute name
+            value: Attribute value
+        """
+        element.attrib[name] = value
+
+    def create_element(
+        self, tag: str, text: str | None = None, attrib: dict[str, str] | None = None
+    ) -> lxml_etree._Element:
+        """Create a new element.
+
+        Args:
+            tag: Element tag name
+            text: Optional text content
+            attrib: Optional attributes
+
+        Returns:
+            The new element
+        """
+        from lxml import etree as lxml_etree
+
+        element = lxml_etree.Element(tag, attrib or {})
+        if text is not None:
+            element.text = text
+        return element

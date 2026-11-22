@@ -62,4 +62,4 @@ class Prettify(PostProcessor):
         from bs4 import BeautifulSoup
 
         soup = BeautifulSoup(html, "html.parser")
-        return soup.prettify()  # type: ignore
+        return soup.prettify()

@@ -88,10 +88,10 @@ class HtmdOptions:
     preformatted_code: bool = False
     skip_tags: list[str] | None = None
 
-    def to_htmd_options(self) -> htmd.Options:  # pyright: ignore
+    def to_htmd_options(self) -> htmd.Options:  # pyright: ignore  # ty: ignore[missing-attribute]
         import htmd
 
-        htmd_opts = htmd.Options()  # pyright: ignore
+        htmd_opts = htmd.Options()  # pyright: ignore  # ty: ignore[missing-attribute]
         htmd_opts.heading_style = _map_heading_style(self.heading_style)
         htmd_opts.hr_style = _map_hr_style(self.hr_style)
         htmd_opts.br_style = _map_br_style(self.br_style)
@@ -187,7 +187,7 @@ class HtmdConverter(BaseHtmlToMarkdown):
         import htmd
 
         htmd_opts = self._options.to_htmd_options()
-        return htmd.convert_html(html, htmd_opts)  # pyright: ignore
+        return htmd.convert_html(html, htmd_opts)  # pyright: ignore  # ty: ignore[missing-attribute]
 
 
 if __name__ == "__main__":

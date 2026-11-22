@@ -1,3 +1,5 @@
+#:tombi schema.strict = false
+
 [project]
 name = "mkconvert"
 version = "1.0.0"
@@ -18,33 +20,32 @@ classifiers = [
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
-  "Topic :: Documentation",
   "Topic :: Software Development",
   "Topic :: Utilities",
   "Typing :: Typed",
 ]
 dependencies = [
-  "pydantic",
   "schemez",
   # Only add below (Copier)
 ]
 
 [project.urls]
 "Code coverage" = "https://app.codecov.io/gh/phil65/mkconvert"
-Discussions = "https://github.com/phil65/mkconvert/discussions"
 Documentation = "https://phil65.github.io/mkconvert/"
 Issues = "https://github.com/phil65/mkconvert/issues"
 Source = "https://github.com/phil65/mkconvert"
 
 [project.optional-dependencies]
+beautifulsoup4 = ["beautifulsoup4>=4.12"]
+bleach = ["bleach>=6"]
 cmarkgfm = ["cmarkgfm"]
-comrak = ["comrak; python_version < '3.14'"]
+comrak = ["comrak>=0.0.15; python_version < '3.14'"]
 htmd-py = ["htmd-py"]
+httpx = ["httpx>=0.27"]
 lxml = ["lxml; python_version < '3.14'"]
-markdown = ["markdown", "pymdown-extensions>=10.12"]
+markdown = ["epregistry", "markdown", "pymdown-extensions>=10.12"]
 markdown_it_pyrs = ["markdown_it_pyrs"]
 markdown2 = ["markdown2"]
 markdownify = ["markdownify"]
@@ -55,6 +56,7 @@ pyromark = ["pyromark; python_version < '3.14'"]
 
 [dependency-groups]
 dev = [
+  "deptry",
   "devtools",
   "pyreadline3",
   "pytest",
@@ -68,10 +70,12 @@ docs = [
   # Only add below (Copier)
 ]
 lint = [
-  "mypy; python_version >= '3.14'",
-  "mypy[faster-cache]; python_version < '3.14'",
-  "ruff",
+  # Pinned on purpose: CI, pre-commit and editors all run exactly these versions.
+  # Bump them here (template) and roll out via `copier update`.
+  "ruff==0.17.6",
+  "ty==0.0.107",
   # Only add below (Copier)
+  "types-lxml",
 ]
 
 [build-system]
@@ -87,6 +91,10 @@ exclude_lines = [
   'if __name__ == "__main__":',
 ]
 
+[tool.deptry.per_rule_ignores]
+# schemez: kept on purpose; pymdown-extensions: loaded by name as Markdown extensions.
+DEP002 = ["schemez", "pymdown-extensions"]
+
 [tool.mknodes]
 allowed-commit-types = [
   "fix",
@@ -98,14 +106,6 @@ allowed-commit-types = [
   "chore",
 ]
 docstring-style = "google"
-
-[tool.mypy]
-python_version = "3.13"
-disable_error_code = ["misc", "import"]
-pretty = true
-check_untyped_defs = true
-exclude = ["venv/", ".venv/", "tests/"]
-plugins = ["pydantic.mypy"]
 
 [tool.pyright]
 venvPath = "."
@@ -126,12 +126,12 @@ reportUnannotatedClassAttribute = false
 reportSelfClsParameterName = false
 reportPrivateImportUsage = false
 
-[tool.pytest.ini_options]
+[tool.pytest]
 log_cli = true
 log_date_format = "%Y-%m-%d %H:%M:%S"
 log_format = "%(asctime)s %(levelname)s %(message)s"
-testpaths = "tests/"
-asyncio_mode = "auto"
+minversion = "9.0"
+testpaths = ["tests/"]
 
 [tool.ruff]
 line-length = 100
@@ -227,11 +227,14 @@ ignore = [
   "D408",  # Section underline should be in the line following the section's name ("{name}")
   "D409",  # Section underline should match the length of its name ("{name}")
   "D413",  # Missing blank line after last section ("{name}")
+  "EM101",  # Exception must not use a string literal, assign to variable first
+  "EM102",  # Exception must not use an f-string literal, assign to variable first
   "ISC001",
   "PLC0415",
   "PLR0912",  # Too many branches
   "PLR0913",  # Too many arguments to function call
   "PLR0915",  # Too many statements
+  "PLR0917",  # Too many positional arguments
   # "PLR2004", # Magic values instead of named consts
   "SLF001",  # Private member accessed
   "TRY003",  # Avoid specifying long messages outside the exception class
@@ -263,6 +266,9 @@ lines-after-imports = 2
 force-sort-within-sections = true
 combine-as-imports = true
 
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "I001"]
 "scripts/*" = ["INP001"]
@@ -275,5 +281,38 @@ preview = true
 python-version = "3.13"
 python-platform = "all"
 
+[tool.ty.src]
+# `ty check` (hooks, CI, editors) type-checks the package code only.
+include = ["src"]
+
+[tool.ty.analysis]
+# Optional dependencies that are not always installed, e.g. "numpy", "numpy.**".
+# Unresolved imports are errors otherwise, so broken imports are caught.
+# comrak and pyromark extras are not installable on Python 3.14+.
+allowed-unresolved-imports = ["comrak", "pyromark", "pyromark.**"]
+
+[tool.ty.rules]
+# Narrowing an overridden class attribute (e.g. pydantic discriminators,
+# `Config` attributes) is an intentional pattern.
+incompatible-mutable-override = "ignore"
+
 [tool.uv]
 default-groups = ["dev", "lint", "docs"]
+
+[tool.uv.build-backend]
+wheel-exclude = [
+  ".mypy_cache/**",
+  "__pycache__/**",
+  "*.pyc",
+  "*.pyo",
+  ".pytest_cache/**",
+  ".ruff_cache/**",
+]
+source-exclude = [
+  ".mypy_cache/**",
+  "__pycache__/**",
+  "*.pyc",
+  "*.pyo",
+  ".pytest_cache/**",
+  ".ruff_cache/**",
+]

@@ -72,7 +72,7 @@ class HtmlToMarkdownFactory:
             ValueError: If no suitable backend is available
         """
         # Combine standard options and backend-specific options
-        combined_options = {
+        combined_options: dict[str, Any] = {
             "heading_style": heading_style,
             "link_style": link_style,
             "code_block_style": code_block_style,

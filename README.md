@@ -9,7 +9,6 @@
 [![Implementation](https://img.shields.io/pypi/implementation/mkconvert.svg)](https://pypi.org/project/mkconvert/)
 [![Releases](https://img.shields.io/github/downloads/phil65/mkconvert/total.svg)](https://github.com/phil65/mkconvert/releases)
 [![Github Contributors](https://img.shields.io/github/contributors/phil65/mkconvert)](https://github.com/phil65/mkconvert/graphs/contributors)
-[![Github Discussions](https://img.shields.io/github/discussions/phil65/mkconvert)](https://github.com/phil65/mkconvert/discussions)
 [![Github Forks](https://img.shields.io/github/forks/phil65/mkconvert)](https://github.com/phil65/mkconvert/forks)
 [![Github Issues](https://img.shields.io/github/issues/phil65/mkconvert)](https://github.com/phil65/mkconvert/issues)
 [![Github Issues](https://img.shields.io/github/issues-pr/phil65/mkconvert)](https://github.com/phil65/mkconvert/pulls)

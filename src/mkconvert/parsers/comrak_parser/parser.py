@@ -19,7 +19,7 @@ class ComrakParser(BaseParser):
         autolink: bool = True,
         tasklist: bool = True,
         superscript: bool = True,
-        header_ids: bool | None = None,
+        header_ids: bool | str | None = None,
         footnotes: bool = True,
         description_lists: bool = True,
         front_matter_delimiter: str | None = None,
@@ -49,7 +49,12 @@ class ComrakParser(BaseParser):
         list_style: str = "-",  # One of "-", "+", "*"
         **kwargs: Any,
     ) -> None:
-        """Initialize the Comrak parser with all available options."""
+        """Initialize the Comrak parser with all available options.
+
+        `header_ids` adds ids to headings: pass a string to use it as id prefix,
+        `True` for no prefix, or `False` / `None` to disable.
+        `list_style` is the bullet list marker, one of "-", "+", "*".
+        """
         import comrak
 
         # Set up extension options
@@ -60,7 +65,10 @@ class ComrakParser(BaseParser):
         self._ext_opts.autolink = autolink
         self._ext_opts.tasklist = tasklist
         self._ext_opts.superscript = superscript
-        self._ext_opts.header_ids = header_ids
+        if isinstance(header_ids, str):
+            self._ext_opts.header_id_prefix = header_ids
+        else:
+            self._ext_opts.header_id_prefix = "" if header_ids else None
         self._ext_opts.footnotes = footnotes
         self._ext_opts.description_lists = description_lists
         self._ext_opts.front_matter_delimiter = front_matter_delimiter
@@ -87,7 +95,12 @@ class ComrakParser(BaseParser):
         self._render_opts.unsafe_ = unsafe_
         self._render_opts.escape = escape
         self._render_opts.sourcepos = sourcepos
-        self._render_opts.list_style = {"-": 45, "+": 43, "*": 42}[list_style]
+        styles = {
+            "-": comrak.ListStyle.Dash,
+            "+": comrak.ListStyle.Plus,
+            "*": comrak.ListStyle.Star,
+        }
+        self._render_opts.list_style = styles[list_style]
 
         # Store additional options
         self._kwargs = kwargs
@@ -152,7 +165,7 @@ class ComrakParser(BaseParser):
             features.add("subscript")
         if self._ext_opts.wikilinks_title_after_pipe or self._ext_opts.wikilinks_title_before_pipe:
             features.add("wikilinks")
-        if self._ext_opts.header_ids:
+        if self._ext_opts.header_id_prefix is not None:
             features.add("header_ids")
         if self._ext_opts.underline:
             features.add("underline")
