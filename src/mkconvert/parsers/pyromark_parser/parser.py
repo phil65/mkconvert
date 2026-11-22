@@ -127,7 +127,6 @@ class PyroMarkParser(BaseParser):
 
         Args:
             markdown_text: Input markdown text
-            **options: Override default options
 
         Returns:
             HTML output as string

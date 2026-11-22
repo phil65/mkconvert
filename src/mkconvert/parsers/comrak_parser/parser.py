@@ -108,12 +108,10 @@ class ComrakParser(BaseParser):
     def convert(self, markdown_text: str) -> str:
         """Convert markdown to HTML.
 
-        Uses pre-configured options for performance when no overrides are provided.
-        Only creates new option objects when specific settings need to be changed.
+        Uses the options configured in `__init__`.
 
         Args:
             markdown_text: Input markdown text
-            **options: Override default options for this conversion
 
         Returns:
             HTML output as string

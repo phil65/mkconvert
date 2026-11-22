@@ -14,7 +14,6 @@ class BaseParser(ABC):
 
         Args:
             markdown_text: Input markdown text
-            **options: Parser-specific options
 
         Returns:
             HTML output as string
