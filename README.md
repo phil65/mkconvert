@@ -24,6 +24,75 @@
 
 [Read the documentation!](https://phil65.github.io/mkconvert/)
 
+One API for many Markdown parsers. `mkconvert` wraps Python and Rust Markdown → HTML
+libraries behind a common `BaseParser` interface, adds an optional processing pipeline
+(pre-processors, HTML tree processors, post-processors such as sanitizing), and offers
+HTML → Markdown conversion. Every backend is an optional extra, so you only install what you use.
+
+## Installation
+
+```bash
+pip install "mkconvert[comrak]"           # Rust-based Comrak parser
+pip install "mkconvert[markdown]"         # Python-Markdown + pymdown-extensions
+pip install "mkconvert[comrak,lxml,nh3]"  # pipeline with lxml tree processing and sanitizing
+```
+
+Parser extras: `comrak`, `pyromark`, `markdown_it_pyrs`, `markdown`, `markdown2`, `mistune`,
+`marko`, `cmarkgfm`, `httpx` (GitHub API parser).
+Other extras: `lxml`, `nh3`, `bleach`, `beautifulsoup4`, `htmd-py`, `markdownify`.
+`comrak`, `pyromark` and `lxml` are currently only installed on Python < 3.14.
+
+## Quickstart
+
+Use a backend directly:
+
+```python
+from mkconvert import ComrakParser
+
+parser = ComrakParser(header_ids=True)
+html = parser.convert("# Hello\n\n~~old~~ **new**")
+print(parser.name, sorted(parser.features))
+```
+
+All parsers share the same interface (`convert()`, `name`, `features`):
+`ComrakParser`, `PyroMarkParser`, `MarkdownItPyRSParser`, `PythonMarkdownParser`,
+`Markdown2Parser`, `MistuneParser`, `MarkoParser`, `GithubApiParser`
+and `mkconvert.parsers.cmarkgfm_parser.CMarkGfmParser`.
+
+Build a pipeline with processors:
+
+```python
+from mkconvert import ExtractTitleETProcessor, MarkdownParser, MkDocsToGFMAdmonitionProcessor
+
+pipeline = MarkdownParser(rust_parser="comrak")  # or "pyromark", "markdown-it-pyrs"
+pipeline.pre_processors.register_processor(MkDocsToGFMAdmonitionProcessor())
+title = ExtractTitleETProcessor()
+pipeline.tree_processors.register_et_processor(title)
+
+html = pipeline.convert('# Guide\n\n!!! note "Heads up"\n    Read this first.\n')
+print(title.title)  # "Guide"
+```
+
+Convert HTML back to Markdown, or sanitize HTML:
+
+```python
+from mkconvert.html_to_md.factory import create_html_to_markdown
+from mkconvert.sanitizers.factory import create_sanitizer
+
+markdown = create_html_to_markdown().convert("<h1>Title</h1><p><b>bold</b></p>")
+safe_html = create_sanitizer().sanitize("<p>hi<script>bad()</script></p>")
+```
+
+## Features
+
+- Uniform `BaseParser` API over nine Markdown backends, with per-backend feature sets.
+- `MarkdownParser` pipeline: pre-processors (e.g. MkDocs admonitions → GitHub alerts),
+  ElementTree or lxml tree processors (e.g. title extraction), post-processors
+  (`SanitizeHTMLProcessor`, `Prettify`).
+- HTML → Markdown via htmd (Rust) or markdownify, with shared style options.
+- HTML sanitizing via nh3 (Rust) or bleach.
+
+## Backend feature comparison
 
 | Feature | Python-Markdown | Markdown2 | Mistune | Comrak (Rust) | PyroMark (Rust) | Markdown-It-PyRS (Rust) |
 |---------|----------------|-----------|---------|---------------|-----------------|-------------------------|
