@@ -55,6 +55,7 @@ TEST = """
 
 
 def test_markdownify():
+    pytest.importorskip("markdownify")
     converter = MarkdownifyConverter()
     result = converter.convert(TEST)
     assert "|" in result

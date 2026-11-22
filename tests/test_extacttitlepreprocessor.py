@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from xml.etree import ElementTree as ET
 
-import markdown
 import pytest
 
 from mkconvert.tree_processors.extract_title import ExtractTitleETProcessor
@@ -13,6 +12,7 @@ from mkconvert.tree_processors.extract_title import ExtractTitleETProcessor
 @pytest.fixture
 def md():
     """Create a markdown instance with attr_list extension."""
+    markdown = pytest.importorskip("markdown")
     return markdown.Markdown(
         extensions=["attr_list"]
     )  # Add attr_list extension for handling attributes
