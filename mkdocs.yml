@@ -1,5 +1,5 @@
 site_name: "mkconvert"
-site_description: "Unified interface for Python and Rust Markdown parsers, with an HTML processing pipeline and HTML-to-Markdown conversion"
+site_description: "One API for Python and Rust Markdown parsers with common options, plus HTML-to-Markdown conversion"
 repo_url: "https://github.com/phil65/mkconvert/"
 site_url: https://phil65.github.io/mkconvert/
 site_author: "Philipp Temminghoff"

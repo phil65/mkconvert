@@ -24,97 +24,140 @@
 
 [Read the documentation!](https://phil65.github.io/mkconvert/)
 
-One API for many Markdown parsers. `mkconvert` wraps Python and Rust Markdown → HTML
-libraries behind a common `BaseParser` interface, adds an optional processing pipeline
-(pre-processors, HTML tree processors, post-processors such as sanitizing), and offers
-HTML → Markdown conversion. Every backend is an optional extra, so you only install what you use.
+One API for many Markdown → HTML parsers (Rust and Python), with a common set of options
+that maps onto every parser, parser-specific options on top, and the same pattern for
+HTML → Markdown. Every backend is an optional extra: install only what you use.
 
 ## Installation
 
 ```bash
-pip install "mkconvert[comrak]"           # Rust-based Comrak parser
-pip install "mkconvert[markdown]"         # Python-Markdown + pymdown-extensions
-pip install "mkconvert[comrak,lxml,nh3]"  # pipeline with lxml tree processing and sanitizing
+pip install "mkconvert[comrak]"            # Rust-based comrak (recommended)
+pip install "mkconvert[pyromark,htmd-py]"  # pulldown-cmark parser + Rust HTML -> Markdown
 ```
 
-Parser extras: `comrak`, `pyromark`, `markdown_it_pyrs`, `markdown`, `markdown2`, `mistune`,
-`marko`, `cmarkgfm`, `httpx2` (GitHub API parser; `httpx` is an alias).
-Other extras: `lxml`, `nh3`, `bleach`, `beautifulsoup4`, `htmd-py`, `markdownify`.
-`comrak`, `pyromark` and `lxml` are currently only installed on Python < 3.14.
+Parser extras: `comrak`, `pyromark`, `markdown_it_pyrs`, `cmarkgfm`, `mistune`, `marko`,
+`markdown2`, `markdown` (Python-Markdown + pymdown-extensions).
+HTML → Markdown: `htmd-py`, `markdownify`. Sanitizing: `nh3`.
+`comrak`, `pyromark` and `markdown_it_pyrs` are limited to Python < 3.14 for now (no wheels /
+crashes there), so their extras install nothing on newer Pythons.
 
 ## Quickstart
 
-Use a backend directly:
-
 ```python
+import mkconvert
+from mkconvert import MarkdownOptions
+
+html = mkconvert.to_html("# Hello\n\n~~old~~ **new**", options=MarkdownOptions.gfm())
+
+# Pick a parser, add common options and parser-specific ones:
+html = mkconvert.to_html(
+    "# Title\n\nx^2^",
+    parser="comrak",
+    options=MarkdownOptions(heading_ids=True, footnotes=True),
+    superscript=True,  # comrak-specific
+)
+
+# Reuse a configured parser for many documents:
+parser = mkconvert.get_parser("comrak", MarkdownOptions.gfm(math=True))
+pages = [parser.convert(text) for text in ["# A", "# B"]]
+
+# Or use the classes directly (typed, documented parameters):
 from mkconvert import ComrakParser
 
-parser = ComrakParser(header_ids=True)
-html = parser.convert("# Hello\n\n~~old~~ **new**")
-print(parser.name, sorted(parser.features))
+html = ComrakParser(MarkdownOptions(tables=True), header_id_prefix="h-").convert("| a |\n|---|")
 ```
 
-All parsers share the same interface (`convert()`, `name`, `features`):
-`ComrakParser`, `PyroMarkParser`, `MarkdownItPyRSParser`, `PythonMarkdownParser`,
-`Markdown2Parser`, `MistuneParser`, `MarkoParser`, `GithubApiParser`
-and `mkconvert.parsers.cmarkgfm_parser.CMarkGfmParser`.
+Without `parser=`, the first installed parser is used, in this order: comrak, pyromark,
+markdown-it-pyrs, cmarkgfm, mistune, marko, markdown2, python-markdown.
+`mkconvert.list_parsers(available_only=True)` lists the installed ones. A missing package
+raises `MissingDependencyError` naming the extra to install.
 
-Build a pipeline with processors:
+## Common options
+
+`MarkdownOptions()` is plain CommonMark: all extensions off, raw HTML passed through.
+`MarkdownOptions.gfm(**changes)` turns on tables, strikethrough, autolinks and task lists.
+
+| Option | comrak | pyromark | markdown-it-pyrs | cmarkgfm | mistune | marko | markdown2 | python-markdown |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| `tables` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `strikethrough` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `autolinks` | ✓ | – | ✓ | ✓ | ✓¹ | ✓ | – | ✓ |
+| `task_lists` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `footnotes` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `heading_ids` | ✓ | – | ✓ | – | ✓ | ✓ | ✓ | ✓ |
+| `alerts` | ✓ | ✓ | – | – | – | ✓ | ✓ | – |
+| `math` | ✓ | ✓ | – | – | ✓ | – | – | ✓ |
+| `definition_lists` | ✓ | ✓ | ✓ | – | ✓ | – | – | ✓ |
+| `hard_breaks` | ✓ | – | – | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `smart_punctuation` | ✓ | ✓ | ✓ | ✓ | – | – | ✓ | ✓ |
+| `raw_html=False` | ✓ | – | ✓ | ✓² | ✓ | ✓ | ✓ | ✓ |
+| `front_matter` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+¹ bare `https://` URLs only, not `www.` ² raw HTML is omitted instead of escaped.
+
+Each option is documented on `MarkdownOptions`. A parser's `supported_options` tells what it
+can do (`mkconvert.get_parser_class("pyromark").supported_options`). Setting an option the
+parser can't honour warns (`UnsupportedOptionWarning`) and is ignored;
+`on_unsupported="raise"` raises `UnsupportedOptionError` instead, `"ignore"` stays quiet.
+
+`raw_html=False` keeps raw HTML out of the output, but it is no sanitizer. For untrusted input
+run the result through `mkconvert.sanitize(html)` (nh3).
+
+## Parser-specific options
+
+Passed as keyword arguments to `to_html` / `get_parser` or the parser class:
+
+| Parser | Options |
+|---|---|
+| `comrak` | `header_id_prefix`, `tagfilter`, `superscript`, `subscript`, `underline`, `spoiler`, `greentext`, `wikilinks`, `multiline_block_quotes`, `math_code`, `relaxed_autolinks`, `relaxed_tasklist_matching`, `default_info_string`, `github_pre_lang`, `full_info_string`, `sourcepos` |
+| `pyromark` | `heading_attributes`, `superscript`, `subscript`, `wikilinks`, `old_footnotes`, `highlight` |
+| `markdown-it-pyrs` | `xhtml`, `sourcepos`, `plugins` |
+| `cmarkgfm` | `tagfilter`, `github_pre_lang`, `sourcepos` |
+| `mistune` | `plugins` (e.g. `["abbr", "mark", "superscript"]`) |
+| `marko` | `extensions` (e.g. `["codehilite", "pangu"]`) |
+| `markdown2` | `extras`, `highlight`, `html4tags` |
+| `python-markdown` | `extensions`, `extension_configs`, `output_format` |
+
+## HTML → Markdown
 
 ```python
-from mkconvert import ExtractTitleETProcessor, MarkdownParser, MkDocsToGFMAdmonitionProcessor
+from mkconvert import HtmlToMarkdownOptions, to_markdown
 
-pipeline = MarkdownParser(rust_parser="comrak")  # or "pyromark", "markdown-it-pyrs"
-pipeline.pre_processors.register_processor(MkDocsToGFMAdmonitionProcessor())
-title = ExtractTitleETProcessor()
-pipeline.tree_processors.register_et_processor(title)
-
-html = pipeline.convert('# Guide\n\n!!! note "Heads up"\n    Read this first.\n')
-print(title.title)  # "Guide"
+md = to_markdown("<h1>Title</h1><p><b>bold</b></p>")
+md = to_markdown(
+    html,
+    converter="markdownify",
+    options=HtmlToMarkdownOptions(heading_style="setext", skip_tags=("script", "style")),
+    code_language="python",  # markdownify-specific
+)
 ```
 
-Convert HTML back to Markdown, or sanitize HTML:
+| Option | htmd | markdownify |
+|---|:-:|:-:|
+| `heading_style` (`"atx"`, `"setext"`) | ✓ | ✓ |
+| `bullet_marker` (`"-"`, `"*"`) | ✓ | ✓ |
+| `emphasis_marker` (`"*"`, `"_"`) | – | ✓ |
+| `code_block_style` (`"fenced"`, `"indented"`) | ✓ | – |
+| `code_fence` (`` "```" ``, `"~~~"`) | ✓ | – |
+| `line_break` (`"spaces"`, `"backslash"`) | ✓ | ✓ |
+| `link_style` (`"inline"`, `"reference"`) | ✓ | – |
+| `skip_tags` | ✓ | ✓ |
 
-```python
-from mkconvert.html_to_md.factory import create_html_to_markdown
-from mkconvert.sanitizers.factory import create_sanitizer
+Converter-specific options: htmd: `hr_style`, `link_reference_style`, `preformatted_code`,
+`ul_bullet_spacing`, `ol_number_spacing`, `translation_mode`; markdownify: `bullets`,
+`strip`, `convert`, `autolinks`, `default_title`, `code_language`, `code_language_callback`,
+`escape_asterisks`, `escape_underscores`, `escape_misc`, `sub_symbol`, `sup_symbol`,
+`table_infer_header`, `wrap`, `wrap_width`, `strip_document`.
 
-markdown = create_html_to_markdown().convert("<h1>Title</h1><p><b>bold</b></p>")
-safe_html = create_sanitizer().sanitize("<p>hi<script>bad()</script></p>")
-```
+## Helpers
 
-## Features
+- `sanitize(html, extra_attributes=None, **nh3_options)`: clean HTML with nh3, e.g.
+  `sanitize(html, extra_attributes={"*": {"id", "class"}})` to keep heading ids and code classes.
+- `extract_title(html)`: text of the first `<h1>`, or `None`.
+- `split_front_matter(text)`: `(front_matter, body)` for a leading `---` block.
 
-- Uniform `BaseParser` API over nine Markdown backends, with per-backend feature sets.
-- `MarkdownParser` pipeline: pre-processors (e.g. MkDocs admonitions → GitHub alerts),
-  ElementTree or lxml tree processors (e.g. title extraction), post-processors
-  (`SanitizeHTMLProcessor`, `Prettify`).
-- HTML → Markdown via htmd (Rust) or markdownify, with shared style options.
-- HTML sanitizing via nh3 (Rust) or bleach.
+## Custom parsers
 
-## Backend feature comparison
-
-| Feature | Python-Markdown | Markdown2 | Mistune | Comrak (Rust) | PyroMark (Rust) | Markdown-It-PyRS (Rust) |
-|---------|----------------|-----------|---------|---------------|-----------------|-------------------------|
-| **Core CommonMark** | ✅ | ✅ | ✅ | ✅ (100% compliant) | ✅ | ✅ (100% compliant) |
-| Fenced code blocks | ✅ | ✅ (with ext) | ✅ | ✅ | ✅ | ✅ |
-| **GitHub Flavored Markdown** |||||||
-| Tables | ✅ (with ext) | ✅ (with ext) | ✅ (with plugin) | ✅ (with `.table`) | ✅ (optional) | ✅ (with GFM or `.table`) |
-| Task lists | ✅ (with pymdownx.tasklist) | ✅ (with ext) | ✅ (with plugin) | ✅ (with `.tasklist`) | ✅ (optional) | ✅ (with `.tasklist`) |
-| Strikethrough | ✅ (with pymdownx.tilde) | ✅ (with ext) | ✅ (with plugin) | ✅ (with `.strikethrough`) | ✅ (optional) | ✅ (with GFM or `.strikethrough`) |
-| Autolinks | ✅ (with pymdownx.magiclink) | ❌ | ✅ (with plugin) | ✅ (with `.autolink`) | ✅ (with GFM) | ✅ (with `.autolink_ext`) |
-| GFM Alerts | ❌ | ❌ | ❌ | ✅ (with `.alerts`) | ✅ (with GFM) | ❌ |
-| **Extended Features** |||||||
-| Footnotes | ✅ (with ext) | ✅ (with ext) | ✅ (with plugin) | ✅ (with `.footnotes`) | ✅ (optional) | ✅ (with `.footnote`) |
-| Definition lists | ✅ (with ext) | ✅ (with ext) | ❌ | ✅ (with `.description_lists`) | ✅ (optional) | ✅ (with `.deflist`) |
-| Admonitions | ✅ (with ext) | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Math notation | ✅ (with pymdownx.arithmatex) | ❌ | ✅ (with plugin) | ✅ (with `.math_dollars`/`.math_code`) | ✅ (optional) | ❌ |
-| Superscript | ✅ (with ext) | ❌ | ❌ | ✅ (with `.superscript`) | ✅ (optional) | ❌ |
-| Subscript | ✅ (with ext) | ❌ | ❌ | ✅ (with `.subscript`) | ✅ (optional) | ❌ |
-| Table of Contents | ✅ (with ext) | ✅ (with ext) | ❌ | ❌ | ❌ | ❌ |
-| Front matter | ✅ (with ext) | ✅ (with ext) | ❌ | ✅ (with `.front_matter_delimiter`) | ✅ (optional) | ✅ (with `.front_matter`) |
-| Wikilinks | ✅ (with ext) | ❌ | ❌ | ✅ (with `.wikilinks_*`) | ✅ (optional) | ❌ |
-| Header IDs | ✅ (with ext) | ✅ (with ext) | ❌ | ✅ (with `.header_ids`) | ✅ (optional) | ✅ (with `.heading_anchors`) |
-| Multiline blockquotes | ❌ | ❌ | ❌ | ✅ (with `.multiline_block_quotes`) | ❌ | ❌ |
-| Syntax highlighting | ✅ (with ext) | ✅ (with ext) | ✅ (with plugin) | ✅ (with plugins) | ❌ | ❌ |
-| Special features | Admonitions | Smart quotes | Custom renderers | Spoiler, Greentext | Definition lists | Tree structure, very fast (20x faster than Python-Markdown) |
+Subclass `MarkdownParser` (set `name`, `requires`, `extra`, `supported_options`, implement
+`_render`) and register it with `mkconvert.register_parser`; likewise
+`HtmlToMarkdownConverter` and `register_converter`.
