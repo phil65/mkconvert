@@ -3,7 +3,7 @@
 [project]
 name = "mkconvert"
 version = "1.2.0"
-description = "Unified interface for Python and Rust Markdown parsers, with an HTML processing pipeline and HTML-to-Markdown conversion"
+description = "One API for Python and Rust Markdown parsers with common options, plus HTML-to-Markdown conversion"
 readme = "README.md"
 requires-python = ">=3.13"
 license = "MIT"
@@ -51,22 +51,17 @@ Issues = "https://github.com/phil65/mkconvert/issues"
 Source = "https://github.com/phil65/mkconvert"
 
 [project.optional-dependencies]
-beautifulsoup4 = ["beautifulsoup4>=4.12"]
-bleach = ["bleach>=6"]
 cmarkgfm = ["cmarkgfm"]
 comrak = ["comrak>=0.0.15; python_version < '3.14'"]
-htmd-py = ["htmd-py"]
-httpx = ["httpx2>=2.16"]  # kept for compatibility, installs httpx2
-httpx2 = ["httpx2>=2.16"]
-lxml = ["lxml; python_version < '3.14'"]
-markdown = ["epregistry", "markdown", "pymdown-extensions>=10.12"]
-markdown_it_pyrs = ["markdown_it_pyrs"]
+htmd-py = ["htmd-py>=0.1.2"]
+markdown = ["markdown", "pymdown-extensions>=10.12"]
+markdown_it_pyrs = ["markdown_it_pyrs; python_version < '3.14'"]  # segfaults on 3.14 (0.4.0)
 markdown2 = ["markdown2"]
-markdownify = ["markdownify"]
-marko = ["marko"]
-mistune = ["mistune"]
+markdownify = ["markdownify>=1"]
+marko = ["marko>=2.1"]
+mistune = ["mistune>=3"]
 nh3 = ["nh3"]
-pyromark = ["pyromark; python_version < '3.14'"]
+pyromark = ["pyromark>=0.10; python_version < '3.14'"]
 
 [dependency-groups]
 dev = [
@@ -89,7 +84,6 @@ lint = [
   "ruff==0.17.6",
   "ty==0.0.107",
   # Only add below (Copier)
-  "types-lxml",
 ]
 
 [build-system]
@@ -107,7 +101,7 @@ exclude_lines = [
 
 [tool.deptry.per_rule_ignores]
 # schemez: kept on purpose; pymdown-extensions: loaded by name as Markdown extensions.
-DEP002 = ["pydantic", "schemez", "pymdown-extensions"]
+DEP002 = ["schemez", "pymdown-extensions"]
 
 [tool.mknodes]
 allowed-commit-types = [
@@ -302,8 +296,8 @@ include = ["src"]
 [tool.ty.analysis]
 # Optional dependencies that are not always installed, e.g. "numpy", "numpy.**".
 # Unresolved imports are errors otherwise, so broken imports are caught.
-# comrak and pyromark extras are not installable on Python 3.14+.
-allowed-unresolved-imports = ["comrak", "pyromark", "pyromark.**"]
+# comrak, pyromark and markdown_it_pyrs extras are not installed on Python 3.14+.
+allowed-unresolved-imports = ["comrak", "pyromark", "pyromark.**", "markdown_it_pyrs", "markdown_it_pyrs.**"]
 
 [tool.ty.rules]
 # Narrowing an overridden class attribute (e.g. pydantic discriminators,
@@ -313,7 +307,7 @@ incompatible-mutable-override = "ignore"
 [[tool.ty.overrides]]
 # The comrak sdist (used where no wheel exists, e.g. Windows + Python 3.13)
 # ships without type stubs, so its members are unknown there.
-include = ["src/mkconvert/parsers/comrak_parser/**"]
+include = ["src/mkconvert/parsers/comrak.py"]
 rules = { missing-attribute = "ignore" }
 
 [tool.uv]

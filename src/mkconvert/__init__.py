@@ -1,8 +1,4 @@
-"""mkconvert: main package.
-
-Unified interface for Python and Rust Markdown parsers,
-with an HTML processing pipeline and HTML-to-Markdown conversion.
-"""
+"""mkconvert: one API over many Markdown parsers, plus HTML -> Markdown conversion."""
 
 from __future__ import annotations
 
@@ -17,50 +13,75 @@ __copyright__ = "Copyright (c) 2024 Philipp Temminghoff"
 __license__ = "MIT"
 __url__ = "https://github.com/phil65/mkconvert"
 
-from mkconvert.parsers.base_parser import BaseParser
-from mkconvert.parsers.parser import MarkdownParser
-from mkconvert.parsers.comrak_parser import ComrakParser
-from mkconvert.parsers.github_api_parser import GithubApiParser
-from mkconvert.parsers.markdown2_parser import Markdown2Parser
-from mkconvert.parsers.markdown_it_pyrs_parser import MarkdownItPyRSParser
-from mkconvert.parsers.marko_parser import MarkoParser
-from mkconvert.parsers.mistune_parser import MistuneParser
-from mkconvert.parsers.pyromark_parser import PyroMarkParser
-from mkconvert.parsers.python_markdown_parser import PythonMarkdownParser
-
-from mkconvert.pre_processors.base import PreProcessor
-from mkconvert.pre_processors.admonition_converter import MkDocsToGFMAdmonitionProcessor
-
-from mkconvert.tree_processors.base import (
-    ETTreeProcessor,
-    LXMLTreeProcessor,
-    TreeProcessor,
+from mkconvert._core import (
+    MissingDependencyError,
+    OnUnsupported,
+    UnsupportedOptionError,
+    UnsupportedOptionWarning,
 )
-from mkconvert.tree_processors.extract_title import ExtractTitleETProcessor
-from mkconvert.tree_processors.extract_title_lxml import ExtractTitleLXMLProcessor
-
-from mkconvert.post_processors.base import PostProcessor
-from mkconvert.post_processors.sanitizer import SanitizeHTMLProcessor
+from mkconvert.parsers import (
+    CmarkgfmParser,
+    ComrakParser,
+    Markdown2Parser,
+    MarkdownItPyrsParser,
+    MarkdownOptions,
+    MarkdownParser,
+    MarkoParser,
+    MistuneParser,
+    PyromarkParser,
+    PythonMarkdownParser,
+)
+from mkconvert.converters import (
+    HtmdConverter,
+    HtmlToMarkdownConverter,
+    HtmlToMarkdownOptions,
+    MarkdownifyConverter,
+)
+from mkconvert.api import (
+    get_converter,
+    get_converter_class,
+    get_parser,
+    get_parser_class,
+    list_converters,
+    list_parsers,
+    register_converter,
+    register_parser,
+    to_html,
+    to_markdown,
+)
+from mkconvert.utils import extract_title, sanitize, split_front_matter
 
 __all__ = [
-    "BaseParser",
+    "CmarkgfmParser",
     "ComrakParser",
-    "ETTreeProcessor",
-    "ExtractTitleETProcessor",
-    "ExtractTitleLXMLProcessor",
-    "GithubApiParser",
-    "LXMLTreeProcessor",
+    "HtmdConverter",
+    "HtmlToMarkdownConverter",
+    "HtmlToMarkdownOptions",
     "Markdown2Parser",
-    "MarkdownItPyRSParser",
+    "MarkdownItPyrsParser",
+    "MarkdownOptions",
     "MarkdownParser",
+    "MarkdownifyConverter",
     "MarkoParser",
+    "MissingDependencyError",
     "MistuneParser",
-    "MkDocsToGFMAdmonitionProcessor",
-    "PostProcessor",
-    "PreProcessor",
-    "PyroMarkParser",
+    "OnUnsupported",
+    "PyromarkParser",
     "PythonMarkdownParser",
-    "SanitizeHTMLProcessor",
-    "TreeProcessor",
+    "UnsupportedOptionError",
+    "UnsupportedOptionWarning",
     "__version__",
+    "extract_title",
+    "get_converter",
+    "get_converter_class",
+    "get_parser",
+    "get_parser_class",
+    "list_converters",
+    "list_parsers",
+    "register_converter",
+    "register_parser",
+    "sanitize",
+    "split_front_matter",
+    "to_html",
+    "to_markdown",
 ]
