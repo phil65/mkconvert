@@ -83,5 +83,5 @@ across Linux/macOS/Windows with `uv sync --all-extras --no-group docs`.
   are absent (ty is told via `[tool.ty.analysis] allowed-unresolved-imports`).
 - `comrak>=0.0.15` is required: `list_style` takes `comrak.ListStyle`, and heading ids are set
   via `header_id_prefix` (string prefix).
-- `GithubApiParser` performs a network call to `api.github.com` (needs the `httpx` extra).
+- `GithubApiParser` performs a network call to `api.github.com` (needs the `httpx2` extra; `httpx` is an alias).
 - `schemez` is an intentionally kept (unused) dependency; deptry ignores it.

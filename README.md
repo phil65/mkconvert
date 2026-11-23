@@ -38,7 +38,7 @@ pip install "mkconvert[comrak,lxml,nh3]"  # pipeline with lxml tree processing a
 ```
 
 Parser extras: `comrak`, `pyromark`, `markdown_it_pyrs`, `markdown`, `markdown2`, `mistune`,
-`marko`, `cmarkgfm`, `httpx` (GitHub API parser).
+`marko`, `cmarkgfm`, `httpx2` (GitHub API parser; `httpx` is an alias).
 Other extras: `lxml`, `nh3`, `bleach`, `beautifulsoup4`, `htmd-py`, `markdownify`.
 `comrak`, `pyromark` and `lxml` are currently only installed on Python < 3.14.
 

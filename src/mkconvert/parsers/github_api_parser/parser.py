@@ -31,12 +31,12 @@ class GithubApiParser(BaseParser):
         Returns:
             HTML output as string
         """
-        import httpx
+        import httpx2
 
         json = {"mode": self.mode, "text": markdown_text}
         if self.context:
             json["context"] = self.context
-        response = httpx.post("https://api.github.com/markdown", json=json)
+        response = httpx2.post("https://api.github.com/markdown", json=json)
         if response.status_code != 200:  # noqa: PLR2004
             msg = f"Failed to convert markdown to HTML: {response.text}"
             raise RuntimeError(msg)
