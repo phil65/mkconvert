@@ -12,7 +12,8 @@ from mkconvert.utils import split_front_matter
 class MarkdownOptions(Options):
     """Common Markdown -> HTML options, mapped onto every parser.
 
-    The defaults are plain CommonMark: every extension off, raw HTML passed through.
+    The defaults are plain CommonMark (every extension off, raw HTML passed through),
+    except that a leading front matter block is dropped.
     Check `MarkdownParser.supported_options` for what a parser can enable.
     """
 
@@ -43,8 +44,12 @@ class MarkdownOptions(Options):
 
     This is not a sanitizer: use `mkconvert.sanitize` for untrusted input.
     """
-    front_matter: bool = False
-    """Drop a leading `---`-delimited front matter block instead of rendering it."""
+    front_matter: bool = True
+    """Drop a leading `---`-delimited front matter block instead of rendering it.
+
+    On by default: almost every Markdown file with a leading `---` block means front
+    matter, not a horizontal rule followed by a heading.
+    """
 
     @classmethod
     def gfm(cls, **changes: Any) -> Self:

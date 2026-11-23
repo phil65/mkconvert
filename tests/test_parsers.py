@@ -42,7 +42,8 @@ CASES: dict[str, tuple[Any, str, Callable[[str], bool]]] = {
         "<div>hi</div>\n\nx <b>y</b>\n",
         lambda h: "<div>" not in h and "<b>" not in h,
     ),
-    "front_matter": (True, "---\ntitle: x\n---\n\n# Hi\n", lambda h: "title" not in h),
+    # on by default: the non-default value renders the block
+    "front_matter": (False, "---\ntitle: x\n---\n\n# Hi\n", lambda h: "title" in h),
 }
 
 

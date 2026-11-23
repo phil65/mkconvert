@@ -74,7 +74,8 @@ raises `MissingDependencyError` naming the extra to install.
 
 ## Common options
 
-`MarkdownOptions()` is plain CommonMark: all extensions off, raw HTML passed through.
+`MarkdownOptions()` is plain CommonMark (all extensions off, raw HTML passed through),
+except that a leading `---` front matter block is dropped (`front_matter=False` renders it).
 `MarkdownOptions.gfm(**changes)` turns on tables, strikethrough, autolinks and task lists.
 
 | Option | comrak | pyromark | markdown-it-pyrs | cmarkgfm | mistune | marko | markdown2 | python-markdown |
