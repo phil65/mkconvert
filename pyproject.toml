@@ -51,7 +51,7 @@ Source = "https://github.com/phil65/mkconvert"
 
 [project.optional-dependencies]
 cmarkgfm = ["cmarkgfm"]
-comrak = ["comrak>=0.0.15; python_version < '3.14'"]
+comrak = ["comrak>=0.0.16"]
 htmd-py = ["htmd-py>=0.1.2"]
 markdown = ["markdown", "pymdown-extensions>=10.12"]
 markdown_it_pyrs = ["markdown_it_pyrs; python_version < '3.14'"]  # segfaults on 3.14 (0.4.0)
@@ -60,7 +60,7 @@ markdownify = ["markdownify>=1"]
 marko = ["marko>=2.1"]
 mistune = ["mistune>=3"]
 nh3 = ["nh3"]
-pyromark = ["pyromark>=0.10; python_version < '3.14'"]
+pyromark = ["pyromark>=0.10.6"]
 
 [dependency-groups]
 dev = [
@@ -295,8 +295,8 @@ include = ["src"]
 [tool.ty.analysis]
 # Optional dependencies that are not always installed, e.g. "numpy", "numpy.**".
 # Unresolved imports are errors otherwise, so broken imports are caught.
-# comrak, pyromark and markdown_it_pyrs extras are not installed on Python 3.14+.
-allowed-unresolved-imports = ["comrak", "pyromark", "pyromark.**", "markdown_it_pyrs", "markdown_it_pyrs.**"]
+# The markdown_it_pyrs extra is not installed on Python 3.14+ (0.4.0 segfaults there).
+allowed-unresolved-imports = ["markdown_it_pyrs", "markdown_it_pyrs.**"]
 
 [tool.ty.rules]
 # Narrowing an overridden class attribute (e.g. pydantic discriminators,
@@ -304,7 +304,7 @@ allowed-unresolved-imports = ["comrak", "pyromark", "pyromark.**", "markdown_it_
 incompatible-mutable-override = "ignore"
 
 [[tool.ty.overrides]]
-# The comrak sdist (used where no wheel exists, e.g. Windows + Python 3.13)
+# The comrak sdist (used where no wheel exists, e.g. exotic platforms)
 # ships without type stubs, so its members are unknown there.
 include = ["src/mkconvert/parsers/comrak.py"]
 rules = { missing-attribute = "ignore" }
