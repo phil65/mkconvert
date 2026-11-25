@@ -9,7 +9,7 @@ from mkconvert.parsers.base import MarkdownParser
 
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
 
     from mkconvert._core import OnUnsupported
     from mkconvert.parsers.base import MarkdownOptions
@@ -49,14 +49,16 @@ class MistuneParser(MarkdownParser):
         options: MarkdownOptions | None = None,
         *,
         on_unsupported: OnUnsupported = "warn",
-        plugins: Sequence[str] = (),
+        plugins: Sequence[str | Callable[..., None]] = (),
     ) -> None:
         """Create a mistune parser.
 
         Args:
             options: Common options.
             on_unsupported: See `Backend`.
-            plugins: Further mistune plugins, e.g. `"abbr"`, `"mark"`, `"superscript"`.
+            plugins: Further mistune plugins: names (e.g. `"abbr"`, `"mark"`,
+                `"superscript"`) or plugin objects (e.g. a `mistune.directives.FencedDirective`
+                for MyST-style admonitions).
         """
         super().__init__(options, on_unsupported=on_unsupported)
         import mistune
@@ -72,7 +74,7 @@ class MistuneParser(MarkdownParser):
             "math": o.math,
             "def_list": o.definition_lists,
         }
-        names = [name for name, enabled in selected.items() if enabled]
+        names: list[str | Callable[..., None]] = [n for n, enabled in selected.items() if enabled]
         names += [p for p in plugins if p not in names]
         self._md = mistune.create_markdown(
             escape=not o.raw_html,

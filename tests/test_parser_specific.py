@@ -88,6 +88,11 @@ def test_marko_extensions() -> None:
 def test_mistune_plugins() -> None:
     _need("mistune")
     assert "<mark>hit</mark>" in to_html("==hit==", parser="mistune", plugins=["mark"])
+    from mistune.directives import Admonition, FencedDirective
+
+    directive = FencedDirective([Admonition()], markers="`:")
+    html = to_html("```{note}\nBody\n```\n", parser="mistune", plugins=[directive])
+    assert 'class="admonition note"' in html
 
 
 def test_markdown2_extras() -> None:
