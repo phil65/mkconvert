@@ -11,6 +11,7 @@ from mkconvert.parsers.base import MarkdownOptions, MarkdownParser
 from mkconvert.parsers.cmarkgfm import CmarkgfmParser
 from mkconvert.parsers.comrak import ComrakParser
 from mkconvert.parsers.markdown2 import Markdown2Parser
+from mkconvert.parsers.markdown_it_py import MarkdownItPyParser
 from mkconvert.parsers.markdown_it_pyrs import MarkdownItPyrsParser
 from mkconvert.parsers.marko import MarkoParser
 from mkconvert.parsers.mistune import MistuneParser
@@ -26,6 +27,7 @@ for _cls in (
     MarkdownItPyrsParser,
     CmarkgfmParser,
     MistuneParser,
+    MarkdownItPyParser,
     MarkoParser,
     Markdown2Parser,
     PythonMarkdownParser,
@@ -36,6 +38,7 @@ __all__ = [
     "CmarkgfmParser",
     "ComrakParser",
     "Markdown2Parser",
+    "MarkdownItPyParser",
     "MarkdownItPyrsParser",
     "MarkdownOptions",
     "MarkdownParser",

@@ -27,6 +27,7 @@ def test_list_parsers() -> None:
         "comrak",
         "pyromark",
         "markdown-it-pyrs",
+        "markdown-it-py",
         "cmarkgfm",
         "mistune",
         "marko",

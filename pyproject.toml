@@ -54,6 +54,7 @@ cmarkgfm = ["cmarkgfm"]
 comrak = ["comrak>=0.0.16"]
 htmd-py = ["htmd-py>=0.1.2"]
 markdown = ["markdown", "pymdown-extensions>=10.12"]
+markdown-it-py = ["markdown-it-py>=4.1", "mdit-py-plugins>=0.5"]
 markdown_it_pyrs = ["markdown_it_pyrs; python_version < '3.14'"]  # segfaults on 3.14 (0.4.0)
 markdown2 = ["markdown2"]
 markdownify = ["markdownify>=1"]
