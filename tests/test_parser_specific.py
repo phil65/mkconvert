@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import contextlib
+
 import pytest
 
 from mkconvert import MarkdownOptions, to_html
@@ -38,10 +40,36 @@ def test_pyromark_heading_attributes() -> None:
     assert "{#custom}" in to_html("# Title {#custom}\n", parser="pyromark")
 
 
+def test_markdown_it_pyrs_is_deprecated() -> None:
+    from mkconvert import MarkdownItPyrsParser, MissingDependencyError
+
+    # Not installable on Python >= 3.13: the warning comes before the dependency check.
+    with (
+        pytest.warns(DeprecationWarning, match=r"removed in mkconvert 3\.0.*markdown-it-py"),
+        contextlib.suppress(MissingDependencyError),
+    ):
+        MarkdownItPyrsParser()
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_markdown_it_pyrs_xhtml() -> None:
     _need("markdown_it_pyrs")
     assert "<hr />" in to_html("---\n", parser="markdown-it-pyrs")
     assert "<hr>" in to_html("---\n", parser="markdown-it-pyrs", xhtml=False)
+
+
+def test_markdown_it_py_specific() -> None:
+    _need("mdit_py_plugins")
+    from mdit_py_plugins.admon import admon_plugin
+
+    html = to_html('!!! note "Title"\n    Body\n', parser="markdown-it-py", plugins=[admon_plugin])
+    assert 'class="admonition note"' in html
+    assert "<hr />" in to_html("---\n", parser="markdown-it-py")
+    assert "<hr>" in to_html("---\n", parser="markdown-it-py", xhtml=False)
+    options = MarkdownOptions(heading_ids=True)
+    html = to_html("# A\n\n## B\n", parser="markdown-it-py", options=options, heading_levels=(2, 2))
+    assert "<h1>A</h1>" in html
+    assert 'id="b"' in html
 
 
 def test_cmarkgfm_tagfilter() -> None:

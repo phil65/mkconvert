@@ -24,13 +24,13 @@ registry: Registry[MarkdownParser] = Registry("Markdown parser")
 for _cls in (
     ComrakParser,
     PyromarkParser,
-    MarkdownItPyrsParser,
     CmarkgfmParser,
     MistuneParser,
     MarkdownItPyParser,
     MarkoParser,
     Markdown2Parser,
     PythonMarkdownParser,
+    MarkdownItPyrsParser,  # deprecated
 ):
     registry.register(_cls)
 

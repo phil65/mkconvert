@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar
+import warnings
 
 from mkconvert.parsers.base import MarkdownParser
 
@@ -36,9 +37,20 @@ _COMMONMARK_RULES: list[_PLUGIN_NAME] = [
 ]
 
 
-class MarkdownItPyrsParser(MarkdownParser):
-    """markdown-it-pyrs: Rust port of markdown-it.
+DEPRECATION_MESSAGE = (
+    "The 'markdown-it-pyrs' parser is deprecated and will be removed in mkconvert 3.0: "
+    "markdown-it-pyrs is unmaintained upstream (last release 0.4.0, 2024) and has no wheels "
+    "for Python >= 3.13 (it segfaults when built for 3.14+). Use 'comrak' or 'pyromark' for "
+    "a fast Rust parser, or 'markdown-it-py' for markdown-it compatibility."
+)
 
+
+# Deprecated: remove in 3.0 (unmaintained upstream, no wheels for Python >= 3.13, see
+# https://github.com/chrisjsewell/markdown-it-pyrs/issues/20).
+class MarkdownItPyrsParser(MarkdownParser):
+    """markdown-it-pyrs: Rust port of markdown-it. Deprecated, removed in mkconvert 3.0.
+
+    Use `comrak` / `pyromark` (Rust) or `markdown-it-py` instead.
     Not supported: `alerts`, `math`, `hard_breaks`.
     """
 
@@ -76,6 +88,7 @@ class MarkdownItPyrsParser(MarkdownParser):
             sourcepos: Add `data-sourcepos` attributes.
             plugins: Further plugins / rules to enable.
         """
+        warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning, stacklevel=2)
         super().__init__(options, on_unsupported=on_unsupported)
         from markdown_it_pyrs import MarkdownIt
 
