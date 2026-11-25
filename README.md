@@ -35,11 +35,21 @@ pip install "mkconvert[comrak]"            # Rust-based comrak (recommended)
 pip install "mkconvert[pyromark,htmd-py]"  # pulldown-cmark parser + Rust HTML -> Markdown
 ```
 
-Parser extras: `comrak`, `pyromark`, `markdown_it_pyrs`, `cmarkgfm`, `mistune`, `marko`,
-`markdown2`, `markdown` (Python-Markdown + pymdown-extensions).
+Parser extras: `comrak`, `pyromark`, `cmarkgfm`, `mistune`, `markdown-it-py`
+(markdown-it-py + mdit-py-plugins), `marko`, `markdown2`, `markdown` (Python-Markdown +
+pymdown-extensions), and the deprecated `markdown_it_pyrs`.
 HTML → Markdown: `htmd-py`, `markdownify`. Sanitizing: `nh3`.
-`comrak`, `pyromark` and `markdown_it_pyrs` are limited to Python < 3.14 for now (no wheels /
-crashes there), so their extras install nothing on newer Pythons.
+
+| Parser | Python 3.14 | Python 3.15 | Notes |
+|---|:-:|:-:|---|
+| comrak (≥ 0.0.16) | ✓ wheels | ✓ abi3 wheels | also free-threaded (3.14t / 3.15t) |
+| pyromark (≥ 0.10.6) | ✓ wheels | ✓ wheels | also free-threaded |
+| cmarkgfm | ✓ wheels | sdist (needs a C compiler) | |
+| mistune, markdown-it-py, marko, markdown2, Python-Markdown | ✓ | ✓ | pure Python |
+| markdown-it-pyrs | ✗ | ✗ | **Deprecated**, removed in 3.0: unmaintained, wheels only up to 3.12, segfaults when built for 3.14+; the extra installs nothing there |
+
+Which parser fits which Markdown dialect, and how fast they are on real documentation:
+see [Parsers by dialect](https://phil65.github.io/mkconvert/parsers/).
 
 ## Quickstart
 
@@ -68,7 +78,7 @@ html = ComrakParser(MarkdownOptions(tables=True), header_id_prefix="h-").convert
 ```
 
 Without `parser=`, the first installed parser is used, in this order: comrak, pyromark,
-markdown-it-pyrs, cmarkgfm, mistune, marko, markdown2, python-markdown.
+cmarkgfm, mistune, markdown-it-py, marko, markdown2, python-markdown, markdown-it-pyrs.
 `mkconvert.list_parsers(available_only=True)` lists the installed ones. A missing package
 raises `MissingDependencyError` naming the extra to install.
 
@@ -78,21 +88,21 @@ raises `MissingDependencyError` naming the extra to install.
 except that a leading `---` front matter block is dropped (`front_matter=False` renders it).
 `MarkdownOptions.gfm(**changes)` turns on tables, strikethrough, autolinks and task lists.
 
-| Option | comrak | pyromark | markdown-it-pyrs | cmarkgfm | mistune | marko | markdown2 | python-markdown |
-|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| `tables` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| `strikethrough` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| `autolinks` | ✓ | – | ✓ | ✓ | ✓¹ | ✓ | – | ✓ |
-| `task_lists` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| `footnotes` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| `heading_ids` | ✓ | – | ✓ | – | ✓ | ✓ | ✓ | ✓ |
-| `alerts` | ✓ | ✓ | – | – | – | ✓ | ✓ | – |
-| `math` | ✓ | ✓ | – | – | ✓ | – | – | ✓ |
-| `definition_lists` | ✓ | ✓ | ✓ | – | ✓ | – | – | ✓ |
-| `hard_breaks` | ✓ | – | – | ✓ | ✓ | ✓ | ✓ | ✓ |
-| `smart_punctuation` | ✓ | ✓ | ✓ | ✓ | – | – | ✓ | ✓ |
-| `raw_html=False` | ✓ | – | ✓ | ✓² | ✓ | ✓ | ✓ | ✓ |
-| `front_matter` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Option | comrak | pyromark | markdown-it-pyrs | cmarkgfm | mistune | markdown-it-py | marko | markdown2 | python-markdown |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| `tables` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `strikethrough` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `autolinks` | ✓ | – | ✓ | ✓ | ✓¹ | ✓ | ✓ | – | ✓ |
+| `task_lists` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `footnotes` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `heading_ids` | ✓ | – | ✓ | – | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `alerts` | ✓ | ✓ | – | – | – | ✓ | ✓ | ✓ | – |
+| `math` | ✓ | ✓ | – | – | ✓ | ✓ | – | – | ✓ |
+| `definition_lists` | ✓ | ✓ | ✓ | – | ✓ | ✓ | – | – | ✓ |
+| `hard_breaks` | ✓ | – | – | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `smart_punctuation` | ✓ | ✓ | ✓ | ✓ | – | ✓ | – | ✓ | ✓ |
+| `raw_html=False` | ✓ | – | ✓ | ✓² | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `front_matter` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 ¹ bare `https://` URLs only, not `www.` ² raw HTML is omitted instead of escaped.
 
@@ -112,9 +122,10 @@ Passed as keyword arguments to `to_html` / `get_parser` or the parser class:
 |---|---|
 | `comrak` | `header_id_prefix`, `tagfilter`, `superscript`, `subscript`, `underline`, `spoiler`, `greentext`, `wikilinks`, `multiline_block_quotes`, `math_code`, `relaxed_autolinks`, `relaxed_tasklist_matching`, `default_info_string`, `github_pre_lang`, `full_info_string`, `sourcepos` |
 | `pyromark` | `heading_attributes`, `superscript`, `subscript`, `wikilinks`, `old_footnotes`, `highlight` |
-| `markdown-it-pyrs` | `xhtml`, `sourcepos`, `plugins` |
+| `markdown-it-pyrs` | `xhtml`, `sourcepos`, `plugins` (deprecated parser) |
+| `markdown-it-py` | `plugins` (mdit-py-plugins, e.g. `admon_plugin`), `xhtml`, `heading_levels` |
 | `cmarkgfm` | `tagfilter`, `github_pre_lang`, `sourcepos` |
-| `mistune` | `plugins` (e.g. `["abbr", "mark", "superscript"]`) |
+| `mistune` | `plugins` (names like `["abbr", "mark"]` or plugin objects such as directives) |
 | `marko` | `extensions` (e.g. `["codehilite", "pangu"]`) |
 | `markdown2` | `extras`, `highlight`, `html4tags` |
 | `python-markdown` | `extensions`, `extension_configs`, `output_format` |
