@@ -1,5 +1,6 @@
 """Parser using [markdown2](https://github.com/trentm/python-markdown2) (pure Python)."""
 
+import threading
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from mkconvert.parsers.base import MarkdownParser
@@ -76,6 +77,8 @@ class Markdown2Parser(MarkdownParser):
             safe_mode=None if o.raw_html else "escape",
             html4tags=html4tags,
         )
+        self._lock = threading.Lock()
 
     def _render(self, text: str) -> str:
-        return str(self._md.convert(text))
+        with self._lock:
+            return str(self._md.convert(text))

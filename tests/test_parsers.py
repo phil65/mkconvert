@@ -1,5 +1,6 @@
 """Common options, parametrized over every installed parser."""
 
+from concurrent.futures import ThreadPoolExecutor
 from html import unescape
 from typing import TYPE_CHECKING, Any
 
@@ -96,3 +97,21 @@ def test_parser_is_reusable(parser_cls: type[MarkdownParser]) -> None:
     first = md.convert("# One\n")
     assert md.convert("# Two\n") != first
     assert md.convert("# One\n") == first
+
+
+def test_parser_is_thread_safe(parser_cls: type[MarkdownParser]) -> None:
+    opts = MarkdownOptions(**{
+        name: name not in {"raw_html", "front_matter"} for name in parser_cls.supported_options
+    })
+    md = parser_cls(opts, on_unsupported="raise")
+    docs = [
+        f"# H{i}\n\nVisit https://x.org/{i} ~~old~~\n\n"
+        f"- [x] item {i}\n\nText[^{i}]\n\n[^{i}]: Note {i}\n\n"
+        f"| a |\n|---|\n| {i} |\n"
+        for i in range(16)
+    ]
+    expected = [md.convert(doc) for doc in docs]
+    indices = [i % len(docs) for i in range(96)]
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(lambda idx: md.convert(docs[idx]), indices))
+    assert results == [expected[idx] for idx in indices]

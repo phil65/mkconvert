@@ -1,5 +1,6 @@
 """Parser using [cmarkgfm](https://github.com/theacodes/cmarkgfm) (GitHub's cmark-gfm, C)."""
 
+import threading
 from typing import TYPE_CHECKING, ClassVar
 
 from mkconvert.parsers.base import MarkdownParser
@@ -8,6 +9,10 @@ from mkconvert.parsers.base import MarkdownParser
 if TYPE_CHECKING:
     from mkconvert._core import OnUnsupported
     from mkconvert.parsers.base import MarkdownOptions
+
+
+# cmark-gfm mutates global C syntax-extension state during rendering.
+_LOCK = threading.Lock()
 
 
 class CmarkgfmParser(MarkdownParser):
@@ -75,6 +80,7 @@ class CmarkgfmParser(MarkdownParser):
     def _render(self, text: str) -> str:
         from cmarkgfm.cmark import markdown_to_html_with_extensions
 
-        return markdown_to_html_with_extensions(
-            text, options=self._flags, extensions=self._extensions
-        )
+        with _LOCK:
+            return markdown_to_html_with_extensions(
+                text, options=self._flags, extensions=self._extensions
+            )
