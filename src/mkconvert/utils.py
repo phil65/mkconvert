@@ -30,23 +30,25 @@ def split_front_matter(text: str) -> tuple[str | None, str]:
 class _TitleParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
-        self.depth = 0
+        self.in_h1 = False
         self.parts: list[str] = []
         self.done = False
 
     def handle_starttag(self, tag: str, attrs: Any) -> None:
         if self.done:
             return
-        if tag == "h1" or self.depth:
-            self.depth += 1
+        if tag == "h1":
+            self.in_h1 = True
+        elif self.in_h1 and tag == "br":
+            self.parts.append(" ")
 
     def handle_endtag(self, tag: str) -> None:
-        if self.depth:
-            self.depth -= 1
-            self.done = self.depth == 0
+        if self.in_h1 and tag == "h1":
+            self.in_h1 = False
+            self.done = True
 
     def handle_data(self, data: str) -> None:
-        if self.depth and not self.done:
+        if self.in_h1:
             self.parts.append(data)
 
 
@@ -59,7 +61,7 @@ def extract_title(html: str) -> str | None:
     parser = _TitleParser()
     parser.feed(html)
     parser.close()
-    if not parser.done and not parser.depth:
+    if not parser.done and not parser.in_h1:
         return None
     return " ".join("".join(parser.parts).split())
 

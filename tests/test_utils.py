@@ -23,6 +23,19 @@ def test_extract_title(html: str, title: str | None) -> None:
 
 
 @pytest.mark.parametrize(
+    ("html", "title"),
+    [
+        ('<h1><img src="logo.png" alt="logo"> Title</h1><p>Body</p>', "Title"),
+        ("<h1>Hello<br>World</h1><p>Body</p>", "Hello World"),
+        ("<h1>Title<wbr>More</h1><p>Body</p>", "TitleMore"),
+        ("<h1><span>Unclosed</h1><p>Body</p>", "Unclosed"),
+    ],
+)
+def test_extract_title_void_and_unclosed_nested_tags(html: str, title: str) -> None:
+    assert extract_title(html) == title
+
+
+@pytest.mark.parametrize(
     ("text", "expected"),
     [
         ("---\ntitle: x\n---\n# Hi\n", ("title: x\n", "# Hi\n")),
