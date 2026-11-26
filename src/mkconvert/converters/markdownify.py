@@ -79,7 +79,7 @@ class MarkdownifyConverter(HtmlToMarkdownConverter):
         from markdownify import MarkdownConverter
 
         o = self.options
-        skip = frozenset(o.skip_tags)
+        skip = frozenset(tag.lower() for tag in o.skip_tags)
 
         class _Converter(MarkdownConverter):
             def get_conv_fn(self, tag_name: str) -> Any:

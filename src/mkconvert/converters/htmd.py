@@ -64,7 +64,7 @@ class HtmdConverter(HtmlToMarkdownConverter):
         opts.code_block_fence = "tildes" if o.code_fence == "~~~" else "backticks"
         opts.br_style = "backslash" if o.line_break == "backslash" else "two_spaces"
         opts.link_style = "referenced" if o.link_style == "reference" else "inlined"
-        opts.skip_tags = list(o.skip_tags)
+        opts.skip_tags = [tag.lower() for tag in o.skip_tags]
         opts.hr_style = hr_style
         opts.link_reference_style = link_reference_style
         opts.preformatted_code = preformatted_code

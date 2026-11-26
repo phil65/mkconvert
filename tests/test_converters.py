@@ -92,3 +92,11 @@ def test_markdownify_specific() -> None:
     )
     assert "* a" in md
     assert "+ b" in md
+
+
+def test_skip_tags_case_insensitive(converter_cls: type[HtmlToMarkdownConverter]) -> None:
+    md = converter_cls(HtmlToMarkdownOptions(skip_tags=("ASIDE",))).convert(
+        "<p>keep</p><aside>drop</aside>"
+    )
+    assert "keep" in md
+    assert "drop" not in md
