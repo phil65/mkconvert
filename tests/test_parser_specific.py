@@ -105,3 +105,31 @@ def test_python_markdown_extensions() -> None:
         '!!! note "Heads up"\n    Text\n', parser="python-markdown", extensions=["admonition"]
     )
     assert 'class="admonition note"' in html
+
+
+def test_python_markdown_extension_configs_merge() -> None:
+    _need("markdown")
+    _need("pymdownx")
+    html = to_html(
+        "~~del~~ ~sub~\n",
+        parser="python-markdown",
+        options=MarkdownOptions(strikethrough=True),
+        extension_configs={"pymdownx.tilde": {"delete": True}},
+    )
+    assert "<del>del</del>" in html
+    assert "<sub>" not in html
+    override = to_html(
+        "~~del~~ ~sub~\n",
+        parser="python-markdown",
+        options=MarkdownOptions(strikethrough=True),
+        extension_configs={"pymdownx.tilde": {"subscript": True}},
+    )
+    assert "<sub>sub</sub>" in override
+    math_html = to_html(
+        "Inline $x^2$ math\n",
+        parser="python-markdown",
+        options=MarkdownOptions(math=True),
+        extension_configs={"pymdownx.arithmatex": {"preview": False}},
+    )
+    assert r"\(x^2\)" in math_html
+    assert "<script" not in math_html

@@ -81,7 +81,8 @@ class PythonMarkdownParser(MarkdownParser):
             "pymdownx.tilde": {"subscript": False},
             "pymdownx.arithmatex": {"generic": True},
         }
-        configs.update(extension_configs or {})
+        for name, cfg in (extension_configs or {}).items():
+            configs[name] = {**configs.get(name, {}), **cfg}
         self._md = markdown.Markdown(
             extensions=exts, extension_configs=configs, output_format=output_format
         )
