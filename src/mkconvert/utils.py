@@ -91,9 +91,10 @@ def sanitize(
         raise MissingDependencyError(msg) from e
 
     if extra_attributes:
-        attributes = {
-            k: set(v) for k, v in nh3_options.get("attributes", nh3.ALLOWED_ATTRIBUTES).items()
-        }
+        base_attributes = nh3_options.get("attributes")
+        if base_attributes is None:
+            base_attributes = nh3.ALLOWED_ATTRIBUTES
+        attributes = {k: set(v) for k, v in base_attributes.items()}
         for tag, names in extra_attributes.items():
             attributes[tag] = attributes.get(tag, set()) | set(names)
         nh3_options["attributes"] = attributes
