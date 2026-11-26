@@ -60,7 +60,7 @@ across Linux/macOS/Windows with `uv sync --all-extras --no-group docs`.
 
 ## Conventions
 
-- `from __future__ import annotations` everywhere; ruff line length 100, Google docstrings.
+- No `from __future__ import annotations` (PEP 649; banned via ruff TID251); ruff line length 100, Google docstrings.
 - Optional libraries are imported inside methods, never at module level of anything imported by
   `mkconvert/__init__.py`. Availability flags use `importlib.util.find_spec(...)`.
 - Tests for optional backends must skip (fixtures in `conftest.py` or `pytest.importorskip`).
