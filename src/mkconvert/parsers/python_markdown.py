@@ -1,5 +1,6 @@
 """Parser using [Python-Markdown](https://python-markdown.github.io/) (pure Python)."""
 
+import threading
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 from mkconvert.parsers.base import MarkdownParser
@@ -89,6 +90,8 @@ class PythonMarkdownParser(MarkdownParser):
         if not o.raw_html:
             self._md.preprocessors.deregister("html_block")
             self._md.inlinePatterns.deregister("html")
+        self._lock = threading.Lock()
 
     def _render(self, text: str) -> str:
-        return self._md.reset().convert(text)
+        with self._lock:
+            return self._md.reset().convert(text)

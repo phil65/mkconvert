@@ -1,10 +1,11 @@
 """Parser-specific options."""
 
+from concurrent.futures import ThreadPoolExecutor
 import contextlib
 
 import pytest
 
-from mkconvert import MarkdownOptions, to_html
+from mkconvert import MarkdownOptions, get_parser, to_html
 
 
 def _need(module: str) -> None:
@@ -73,6 +74,21 @@ def test_markdown_it_py_specific() -> None:
 def test_cmarkgfm_tagfilter() -> None:
     _need("cmarkgfm")
     assert "&lt;script" in to_html("<script>x</script>\n", parser="cmarkgfm", tagfilter=True)
+
+
+def test_cmarkgfm_thread_safe_across_instances() -> None:
+    _need("cmarkgfm")
+    opts = MarkdownOptions.gfm(footnotes=True)
+    docs = [
+        f"# H{i}\n\nVisit https://x.org/{i} ~~old~~\n\n| a |\n|---|\n| {i} |\n" for i in range(16)
+    ]
+    expected = [get_parser("cmarkgfm", opts).convert(doc) for doc in docs]
+    indices = [i % len(docs) for i in range(96)]
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(
+            pool.map(lambda idx: get_parser("cmarkgfm", opts).convert(docs[idx]), indices)
+        )
+    assert results == [expected[idx] for idx in indices]
 
 
 def test_marko_extensions() -> None:

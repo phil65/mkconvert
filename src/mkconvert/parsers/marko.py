@@ -1,6 +1,7 @@
 """Parser using [Marko](https://github.com/frostming/marko) (pure Python, CommonMark)."""
 
 import html
+import threading
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from mkconvert.parsers.base import MarkdownParser
@@ -102,6 +103,8 @@ class MarkoParser(MarkdownParser):
             exts.append(MarkoExtension(renderer_mixins=mixins))
         exts.extend(extensions)
         self._md = marko.Markdown(extensions=exts)
+        self._lock = threading.Lock()
 
     def _render(self, text: str) -> str:
-        return self._md.convert(text)
+        with self._lock:
+            return self._md.convert(text)
