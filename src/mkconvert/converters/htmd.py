@@ -1,7 +1,5 @@
 """Converter using [htmd-py](https://github.com/lmmx/htmd-py) (Rust, port of turndown)."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, ClassVar, Literal
 
 from mkconvert.converters.base import HtmlToMarkdownConverter

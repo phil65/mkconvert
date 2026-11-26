@@ -1,7 +1,5 @@
 """Top-level functions: convert, look up and register backends by name."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any
 
 from mkconvert import converters, parsers

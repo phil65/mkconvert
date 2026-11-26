@@ -1,7 +1,5 @@
 """Front matter, title extraction and sanitizing."""
 
-from __future__ import annotations
-
 import pytest
 
 from mkconvert import extract_title, sanitize, split_front_matter

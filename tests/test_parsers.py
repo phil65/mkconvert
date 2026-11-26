@@ -1,7 +1,5 @@
 """Common options, parametrized over every installed parser."""
 
-from __future__ import annotations
-
 from html import unescape
 from typing import TYPE_CHECKING, Any
 

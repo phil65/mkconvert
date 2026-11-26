@@ -1,7 +1,5 @@
 """Shared machinery for parsers and converters: options, errors, registry."""
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 import importlib.util
 from pathlib import Path

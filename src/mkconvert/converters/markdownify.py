@@ -1,7 +1,5 @@
 """Converter using [markdownify](https://github.com/matthewwithanm/python-markdownify)."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 from mkconvert.converters.base import HtmlToMarkdownConverter

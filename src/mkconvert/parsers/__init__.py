@@ -4,8 +4,6 @@ Importing this package does not import any parser library: each parser imports i
 library when instantiated.
 """
 
-from __future__ import annotations
-
 from mkconvert._core import Registry
 from mkconvert.parsers.base import MarkdownOptions, MarkdownParser
 from mkconvert.parsers.cmarkgfm import CmarkgfmParser

@@ -1,7 +1,5 @@
 """Parser using [markdown-it-py](https://github.com/executablebooks/markdown-it-py) (Python)."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from mkconvert.parsers.base import MarkdownParser

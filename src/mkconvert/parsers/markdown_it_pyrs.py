@@ -1,7 +1,5 @@
 """Parser using [markdown-it-pyrs](https://github.com/chrisjsewell/markdown-it-pyrs) (Rust)."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, ClassVar
 import warnings
 

@@ -1,7 +1,5 @@
 """Parser using [mistune](https://github.com/lepture/mistune) (pure Python, fast)."""
 
-from __future__ import annotations
-
 import re
 from typing import TYPE_CHECKING, Any, ClassVar
 

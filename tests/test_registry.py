@@ -1,7 +1,5 @@
 """Registry, lookup and missing-dependency errors."""
 
-from __future__ import annotations
-
 from typing import ClassVar
 
 import pytest

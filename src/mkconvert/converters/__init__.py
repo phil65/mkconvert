@@ -4,8 +4,6 @@ Importing this package does not import any converter library: each converter imp
 its library when instantiated.
 """
 
-from __future__ import annotations
-
 from mkconvert._core import Registry
 from mkconvert.converters.base import HtmlToMarkdownConverter, HtmlToMarkdownOptions
 from mkconvert.converters.htmd import HtmdConverter

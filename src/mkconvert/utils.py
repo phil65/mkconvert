@@ -1,7 +1,5 @@
 """Small helpers around conversion: front matter, title extraction, sanitizing."""
 
-from __future__ import annotations
-
 from html.parser import HTMLParser
 import re
 from typing import TYPE_CHECKING, Any

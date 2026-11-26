@@ -1,7 +1,5 @@
 """Common options and base class for HTML -> Markdown converters."""
 
-from __future__ import annotations
-
 from typing import ClassVar, Literal
 
 from mkconvert._core import Backend, Options

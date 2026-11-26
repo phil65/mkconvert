@@ -1,7 +1,5 @@
 """Parser using [comrak](https://github.com/kivikakk/comrak) (Rust, CommonMark + GFM)."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, ClassVar
 
 from mkconvert.parsers.base import MarkdownParser

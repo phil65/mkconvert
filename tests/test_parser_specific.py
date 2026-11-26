@@ -1,7 +1,5 @@
 """Parser-specific options."""
 
-from __future__ import annotations
-
 import contextlib
 
 import pytest

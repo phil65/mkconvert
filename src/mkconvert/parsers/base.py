@@ -1,7 +1,5 @@
 """Common options and base class for Markdown -> HTML parsers."""
 
-from __future__ import annotations
-
 from abc import abstractmethod
 from typing import Any, ClassVar, Self
 

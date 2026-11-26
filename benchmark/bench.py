@@ -3,8 +3,6 @@
 Usage: `uv run python -m benchmark.bench [case ...]`
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 import sys
 import time

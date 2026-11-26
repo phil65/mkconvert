@@ -22,8 +22,6 @@ Each parser runs in two kinds of configuration:
   its fenced directives for MyST). Shows what a parser can do with the right setup.
 """
 
-from __future__ import annotations
-
 import argparse
 from dataclasses import dataclass, field
 import gc

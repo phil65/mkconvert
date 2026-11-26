@@ -1,7 +1,5 @@
 """Parser using [pyromark](https://github.com/monosans/pyromark) (Rust, pulldown-cmark)."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, ClassVar
 
 from mkconvert.parsers.base import MarkdownParser

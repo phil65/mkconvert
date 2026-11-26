@@ -1,7 +1,5 @@
 """Parser using [Marko](https://github.com/frostming/marko) (pure Python, CommonMark)."""
 
-from __future__ import annotations
-
 import html
 from typing import TYPE_CHECKING, Any, ClassVar
 

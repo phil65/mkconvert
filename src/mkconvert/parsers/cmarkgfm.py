@@ -1,7 +1,5 @@
 """Parser using [cmarkgfm](https://github.com/theacodes/cmarkgfm) (GitHub's cmark-gfm, C)."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, ClassVar
 
 from mkconvert.parsers.base import MarkdownParser

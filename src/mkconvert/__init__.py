@@ -1,7 +1,5 @@
 """mkconvert: one API over many Markdown parsers, plus HTML -> Markdown conversion."""
 
-from __future__ import annotations
-
 from importlib.metadata import version
 
 __version__ = version("mkconvert")

@@ -1,7 +1,5 @@
 """Parser using [markdown2](https://github.com/trentm/python-markdown2) (pure Python)."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from mkconvert.parsers.base import MarkdownParser
